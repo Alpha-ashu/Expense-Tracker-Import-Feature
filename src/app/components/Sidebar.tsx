@@ -9,6 +9,8 @@ import {
   TrendingUp,
   BarChart3,
   Settings,
+  Calculator,
+  ArrowRightLeft,
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 
@@ -24,7 +26,10 @@ const menuItems = [
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<{ onOpenTransfer?: () => void; onOpenTaxCalculator?: () => void }> = ({
+  onOpenTransfer,
+  onOpenTaxCalculator,
+}) => {
   const { currentPage, setCurrentPage } = useApp();
 
   return (
@@ -54,6 +59,24 @@ export const Sidebar: React.FC = () => {
             </button>
           );
         })}
+
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2 px-4">Quick Actions</p>
+          <button
+            onClick={onOpenTransfer}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <ArrowRightLeft size={20} />
+            <span className="font-medium">Transfer Money</span>
+          </button>
+          <button
+            onClick={onOpenTaxCalculator}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <Calculator size={20} />
+            <span className="font-medium">Calculate Tax</span>
+          </button>
+        </div>
       </nav>
 
       <div className="p-4 border-t border-gray-200">

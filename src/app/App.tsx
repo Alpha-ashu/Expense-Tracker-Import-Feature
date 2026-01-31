@@ -177,7 +177,12 @@ const AppContent: React.FC = () => {
       case 'reports':
         return <Reports />;
       case 'settings':
-        return <Settings />;
+        return (
+          <Settings
+            onOpenTaxCalculator={() => setShowTaxCalculator(true)}
+            onOpenFinanceAdvisor={() => setShowFinanceAdvisor(true)}
+          />
+        );
       default:
         return <Dashboard />;
     }
@@ -187,7 +192,10 @@ const AppContent: React.FC = () => {
     <div className="flex h-screen bg-gray-50 overflow-hidden mobile-container">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
-        <Sidebar />
+        <Sidebar
+          onOpenTransfer={() => setShowTransfer(true)}
+          onOpenTaxCalculator={() => setShowTaxCalculator(true)}
+        />
       </div>
       
       <div className="flex-1 flex flex-col overflow-hidden w-full">

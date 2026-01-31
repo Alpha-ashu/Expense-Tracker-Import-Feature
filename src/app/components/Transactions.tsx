@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useApp } from '@/contexts/AppContext';
-import { db } from '@/lib/database';
+import { useApp } from '../../contexts/AppContext';
+import { db } from '../../lib/database';
 import { Plus, Upload, TrendingUp, TrendingDown, Filter, Search, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, getSubcategoriesForCategory } from '@/lib/expenseCategories';
@@ -243,10 +243,15 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ accounts, onC
     amount: 0,
     accountId: accounts[0]?.id || 0,
     category: CATEGORIES.expense[0],
+    subcategory: '',
     description: '',
     merchant: '',
     date: new Date().toISOString().split('T')[0],
   });
+
+  const subcategories = useMemo(() => {
+    return getSubcategoriesForCategory(formData.category, formData.type);
+  }, [formData.category, formData.type]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -341,7 +346,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ accounts, onC
             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value, subcategory: '' })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
@@ -350,6 +355,22 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ accounts, onC
               ))}
             </select>
           </div>
+
+          {subcategories.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory</label>
+              <select
+                value={formData.subcategory}
+                onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a subcategory</option>
+                {subcategories.map(subcat => (
+                  <option key={subcat} value={subcat}>{subcat}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
