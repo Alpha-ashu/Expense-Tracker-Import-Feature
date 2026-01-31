@@ -158,14 +158,20 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose, currency }) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await db.accounts.add({
-      ...formData,
-      currency,
-      isActive: true,
-      createdAt: new Date(),
-    });
-    toast.success('Account added successfully');
-    onClose();
+    try {
+      await db.accounts.add({
+        ...formData,
+        currency,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      toast.success('Account added successfully');
+      onClose();
+    } catch (error) {
+      console.error('Failed to add account:', error);
+      toast.error('Failed to add account');
+    }
   };
 
   return (

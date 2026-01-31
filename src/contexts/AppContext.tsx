@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, Account, Transaction, Loan, Goal, Investment, GroupExpense, Friend } from '@/lib/database';
+import { realtimeSyncManager, trackChange } from '@/lib/realTime';
 
 interface AppContextType {
   currentPage: string;
@@ -15,6 +16,10 @@ interface AppContextType {
   totalBalance: number;
   currency: string;
   refreshData: () => void;
+  isOnline: boolean;
+  addTransaction: (transaction: Omit<Transaction, 'id'>) => Promise<void>;
+  updateAccount: (accountId: number, updates: Partial<Account>) => Promise<void>;
+  addAccount: (account: Omit<Account, 'id'>) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -22,23 +27,77 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [currency] = useState('USD');
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
-  const accounts = useLiveQuery(() => db.accounts.toArray(), []) || [];
-  const friends = useLiveQuery(() => db.friends.toArray(), []) || [];
-  const transactions = useLiveQuery(() => db.transactions.orderBy('date').reverse().toArray(), []) || [];
-  const loans = useLiveQuery(() => db.loans.toArray(), []) || [];
-  const goals = useLiveQuery(() => db.goals.toArray(), []) || [];
-  const investments = useLiveQuery(() => db.investments.toArray(), []) || [];
-  const groupExpenses = useLiveQuery(() => db.groupExpenses.toArray(), []) || [];
+  const accounts = useLiveQuery(() => db.accounts.toArray(), [forceUpdate]) || [];
+  const friends = useLiveQuery(() => db.friends.toArray(), [forceUpdate]) || [];
+  const transactions = useLiveQuery(() => db.transactions.orderBy('date').reverse().toArray(), [forceUpdate]) || [];
+  const loans = useLiveQuery(() => db.loans.toArray(), [forceUpdate]) || [];
+  const goals = useLiveQuery(() => db.goals.toArray(), [forceUpdate]) || [];
+  const investments = useLiveQuery(() => db.investments.toArray(), [forceUpdate]) || [];
+  const groupExpenses = useLiveQuery(() => db.groupExpenses.toArray(), [forceUpdate]) || [];
 
   const totalBalance = accounts
     .filter(acc => acc.isActive)
     .reduce((sum, acc) => sum + acc.balance, 0);
 
-  const refreshData = () => {
-    // Force re-query
-    db.accounts.toArray();
-  };
+  // Setup real-time sync listeners
+  useEffect(() => {
+    const unsubscribe = realtimeSyncManager.subscribe(() => {
+      setForceUpdate(prev => prev + 1);
+    });
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const refreshData = useCallback(() => {
+    setForceUpdate(prev => prev + 1);
+  }, []);
+
+  const addTransaction = useCallback(async (transaction: Omit<Transaction, 'id'>) => {
+    try {
+      await db.transactions.add(transaction);
+      trackChange('transaction-add', transaction);
+      refreshData();
+    } catch (error) {
+      console.error('Failed to add transaction:', error);
+      throw error;
+    }
+  }, [refreshData]);
+
+  const updateAccount = useCallback(async (accountId: number, updates: Partial<Account>) => {
+    try {
+      await db.accounts.update(accountId, updates);
+      trackChange('account-update', { accountId, updates });
+      refreshData();
+    } catch (error) {
+      console.error('Failed to update account:', error);
+      throw error;
+    }
+  }, [refreshData]);
+
+  const addAccount = useCallback(async (account: Omit<Account, 'id'>) => {
+    try {
+      const id = await db.accounts.add(account);
+      trackChange('account-add', { ...account, id });
+      refreshData();
+      return id;
+    } catch (error) {
+      console.error('Failed to add account:', error);
+      throw error;
+    }
+  }, [refreshData]);
 
   return (
     <AppContext.Provider
@@ -55,6 +114,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         totalBalance,
         currency,
         refreshData,
+        isOnline,
+        addTransaction,
+        updateAccount,
+        addAccount,
       }}
     >
       {children}

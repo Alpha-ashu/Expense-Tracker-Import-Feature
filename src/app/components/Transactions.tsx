@@ -264,20 +264,25 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ accounts, onC
       return;
     }
 
-    await db.transactions.add({
-      ...formData,
-      date: new Date(formData.date),
-      tags: [],
-    });
+    try {
+      await db.transactions.add({
+        ...formData,
+        date: new Date(formData.date),
+        tags: [],
+      });
 
-    const newBalance = formData.type === 'income'
-      ? account.balance + formData.amount
-      : account.balance - formData.amount;
+      const newBalance = formData.type === 'income'
+        ? account.balance + formData.amount
+        : account.balance - formData.amount;
 
-    await db.accounts.update(formData.accountId, { balance: newBalance });
+      await db.accounts.update(formData.accountId, { balance: newBalance, updatedAt: new Date() });
 
-    toast.success('Transaction added successfully');
-    onClose();
+      toast.success('Transaction added successfully');
+      onClose();
+    } catch (error) {
+      console.error('Failed to add transaction:', error);
+      toast.error('Failed to add transaction');
+    }
   };
 
   return (
@@ -444,26 +449,32 @@ const BillScannerModal: React.FC<BillScannerModalProps> = ({ accounts, onClose }
   const handleSaveScanned = async () => {
     if (!scannedData) return;
 
-    await db.transactions.add({
-      type: 'expense',
-      amount: scannedData.amount,
-      accountId: accounts[0]?.id || 0,
-      category: scannedData.category,
-      description: `Bill from ${scannedData.merchant}`,
-      merchant: scannedData.merchant,
-      date: new Date(scannedData.date),
-      tags: ['scanned'],
-    });
-
-    const account = accounts[0];
-    if (account) {
-      await db.accounts.update(account.id, {
-        balance: account.balance - scannedData.amount,
+    try {
+      await db.transactions.add({
+        type: 'expense',
+        amount: scannedData.amount,
+        accountId: accounts[0]?.id || 0,
+        category: scannedData.category,
+        description: `Bill from ${scannedData.merchant}`,
+        merchant: scannedData.merchant,
+        date: new Date(scannedData.date),
+        tags: ['scanned'],
       });
-    }
 
-    toast.success('Transaction saved successfully');
-    onClose();
+      const account = accounts[0];
+      if (account) {
+        await db.accounts.update(account.id, {
+          balance: account.balance - scannedData.amount,
+          updatedAt: new Date()
+        });
+      }
+
+      toast.success('Transaction saved successfully');
+      onClose();
+    } catch (error) {
+      console.error('Failed to save scanned transaction:', error);
+      toast.error('Failed to save transaction');
+    }
   };
 
   return (

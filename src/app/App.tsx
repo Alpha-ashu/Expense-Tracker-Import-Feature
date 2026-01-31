@@ -20,6 +20,8 @@ import { Toaster } from 'sonner';
 import { initializeDemoData } from '@/lib/demoData';
 import { initializeNotifications } from '@/lib/notifications';
 import { registerServiceWorker, setupPWAInstallPrompt, setupNetworkListener } from '@/lib/pwa';
+import { initializeRealtimeSync } from '@/lib/realTime';
+import { HealthChecker } from '@/lib/health';
 import { App as CapacitorApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
@@ -36,7 +38,16 @@ const AppContent: React.FC = () => {
     Promise.all([
       initializeDemoData(),
       initializeNotifications(),
-    ]).then(() => setIsInitialized(true));
+    ]).then(() => {
+      // Initialize real-time sync
+      initializeRealtimeSync();
+      
+      // Start health checks
+      HealthChecker.checkHealth().catch(console.error);
+      HealthChecker.startPeriodicCheck(60000).catch(console.error); // Check every minute
+      
+      setIsInitialized(true);
+    });
 
     // Setup Capacitor plugins for native platforms
     if (Capacitor.isNativePlatform()) {
