@@ -300,53 +300,7 @@ export const Settings: React.FC = () => {
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">Finance Tools</h3>
-          <p className="text-sm text-gray-500 mt-1">Access advanced financial planning features</p>
-        </div>
-
-        <div className="divide-y divide-gray-200">
-          <div className="p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calculator className="text-purple-600" size={20} />
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900">Tax Calculator</h4>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Calculate your estimated income tax with detailed breakdown
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setCurrentPage('tax-calculator')}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                Open
-              </button>
-            </div>
-          </div>
-
-          <div className="p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Users className="text-indigo-600" size={20} />
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900">Book Finance Advisor</h4>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Schedule sessions with qualified financial advisors
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setCurrentPage('finance-advisor')}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                Open
-              </button>
-            </div>
-          </div>
+          <p className="text-sm text-gray-500 mt-1">Access advanced financial planning features from the main menu (Tax Calculator, Finance Advisor)</p>
         </div>
       </div>
 

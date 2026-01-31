@@ -8,8 +8,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 const COLORS = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#6366F1'];
 
 export const Investments: React.FC = () => {
-  const { investments, currency } = useApp();
-  const [showAddModal, setShowAddModal] = useState(false);
+  const { investments, currency, setCurrentPage } = useApp();
 
   const portfolioStats = useMemo(() => {
     const totalInvested = investments.reduce((sum, i) => sum + i.totalInvested, 0);
@@ -48,7 +47,7 @@ export const Investments: React.FC = () => {
           <p className="text-gray-500 mt-1">Track your investment portfolio</p>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => setCurrentPage('add-investment')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus size={20} />
@@ -191,156 +190,13 @@ export const Investments: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No investments yet</h3>
             <p className="text-gray-500 mb-4">Start tracking your investment portfolio</p>
             <button
-              onClick={() => setShowAddModal(true)}
+              onClick={() => setCurrentPage('add-investment')}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Add Your First Investment
             </button>
           </div>
         )}
-      </div>
-
-      {showAddModal && <AddInvestmentModal onClose={() => setShowAddModal(false)} />}
-    </div>
-  );
-};
-
-const AddInvestmentModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [formData, setFormData] = useState({
-    assetType: 'stock' as 'stock' | 'crypto' | 'forex' | 'gold' | 'silver' | 'other',
-    assetName: '',
-    quantity: 0,
-    buyPrice: 0,
-    currentPrice: 0,
-    purchaseDate: new Date().toISOString().split('T')[0],
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const totalInvested = formData.quantity * formData.buyPrice;
-    const currentValue = formData.quantity * formData.currentPrice;
-    const profitLoss = currentValue - totalInvested;
-
-    await db.investments.add({
-      ...formData,
-      totalInvested,
-      currentValue,
-      profitLoss,
-      purchaseDate: new Date(formData.purchaseDate),
-      lastUpdated: new Date(),
-    });
-
-    toast.success('Investment added successfully');
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <h3 className="text-xl font-bold mb-4">Add Investment</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Asset Type</label>
-            <select
-              value={formData.assetType}
-              onChange={(e) => setFormData({ ...formData, assetType: e.target.value as any })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="stock">Stock</option>
-              <option value="crypto">Cryptocurrency</option>
-              <option value="forex">Forex</option>
-              <option value="gold">Gold</option>
-              <option value="silver">Silver</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Asset Name</label>
-            <input
-              type="text"
-              value={formData.assetName}
-              onChange={(e) => setFormData({ ...formData, assetName: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., AAPL, Bitcoin, Gold Bar"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-              <input
-                type="number"
-                step="0.01"
-                value={formData.quantity || ''}
-                onChange={(e) => setFormData({ ...formData, quantity: parseFloat(e.target.value) || 0 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Buy Price</label>
-              <input
-                type="number"
-                step="0.01"
-                value={formData.buyPrice || ''}
-                onChange={(e) => setFormData({ ...formData, buyPrice: parseFloat(e.target.value) || 0 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Current Price</label>
-            <input
-              type="number"
-              step="0.01"
-              value={formData.currentPrice || ''}
-              onChange={(e) => setFormData({ ...formData, currentPrice: parseFloat(e.target.value) || 0 })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
-            <input
-              type="date"
-              value={formData.purchaseDate}
-              onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-700">
-              Total Investment: <span className="font-semibold">${(formData.quantity * formData.buyPrice).toFixed(2)}</span>
-            </p>
-            <p className="text-sm text-blue-700 mt-1">
-              Current Value: <span className="font-semibold">${(formData.quantity * formData.currentPrice).toFixed(2)}</span>
-            </p>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Add Investment
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );

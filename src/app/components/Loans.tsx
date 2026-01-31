@@ -6,8 +6,7 @@ import { toast } from 'sonner';
 import { AddLoanModalWithFriends } from '@/app/components/AddLoanModalWithFriends';
 
 export const Loans: React.FC = () => {
-  const { loans, currency, accounts, friends } = useApp();
-  const [showAddModal, setShowAddModal] = useState(false);
+  const { loans, currency, accounts, friends, setCurrentPage } = useApp();
   const [showPaymentModal, setShowPaymentModal] = useState<number | null>(null);
 
   const loanStats = useMemo(() => {
@@ -48,7 +47,7 @@ export const Loans: React.FC = () => {
           <p className="text-gray-500 mt-1">Manage your debts and lending</p>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => setCurrentPage('add-loan')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus size={20} />
@@ -158,11 +157,6 @@ export const Loans: React.FC = () => {
         ))}
       </div>
 
-      {showAddModal && (
-        <AddLoanModalWithFriends
-          onClose={() => setShowAddModal(false)}
-        />
-      )}
 
       {showPaymentModal && (
         <PaymentModal

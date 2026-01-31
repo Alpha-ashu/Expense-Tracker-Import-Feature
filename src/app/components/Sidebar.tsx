@@ -12,6 +12,7 @@ import {
   Calculator,
   ArrowRightLeft,
   CalendarDays,
+  BookOpen,
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 
@@ -25,9 +26,10 @@ const menuItems = [
   { id: 'investments', label: 'Investments', icon: TrendingUp },
   { id: 'reports', label: 'Reports', icon: BarChart3 },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
-  { id: 'settings', label: 'Settings', icon: Settings },
   { id: 'transfer', label: 'Transfer Money', icon: ArrowRightLeft },
-  { id: 'tax-calculator', label: 'Calculate Tax', icon: Calculator },
+  { id: 'tax-calculator', label: 'Tax Calculator', icon: Calculator },
+  { id: 'finance-advisor', label: 'Finance Advisor', icon: BookOpen },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 export const Sidebar: React.FC = () => {

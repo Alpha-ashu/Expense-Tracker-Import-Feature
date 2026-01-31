@@ -5,8 +5,7 @@ import { Plus, Target, Calendar, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Goals: React.FC = () => {
-  const { goals, accounts, currency } = useApp();
-  const [showAddModal, setShowAddModal] = useState(false);
+  const { goals, accounts, currency, setCurrentPage } = useApp();
   const [showContributeModal, setShowContributeModal] = useState<number | null>(null);
 
   const formatCurrency = (amount: number) => {
@@ -29,7 +28,7 @@ export const Goals: React.FC = () => {
           <p className="text-gray-500 mt-1">Track your financial goals</p>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => setCurrentPage('add-goal')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus size={20} />
@@ -127,7 +126,7 @@ export const Goals: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No goals yet</h3>
           <p className="text-gray-500 mb-4">Start planning for your financial future</p>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => setCurrentPage('add-goal')}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Create Your First Goal
@@ -135,7 +134,6 @@ export const Goals: React.FC = () => {
         </div>
       )}
 
-      {showAddModal && <AddGoalModal onClose={() => setShowAddModal(false)} />}
       {showContributeModal && (
         <ContributeModal
           goalId={showContributeModal}
@@ -143,98 +141,6 @@ export const Goals: React.FC = () => {
           onClose={() => setShowContributeModal(null)}
         />
       )}
-    </div>
-  );
-};
-
-const AddGoalModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    targetAmount: 0,
-    targetDate: '',
-    category: 'Personal',
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await db.goals.add({
-      ...formData,
-      currentAmount: 0,
-      targetDate: new Date(formData.targetDate),
-      isGroupGoal: false,
-      createdAt: new Date(),
-    });
-    toast.success('Goal created successfully');
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">Create New Goal</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Goal Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Emergency Fund, Vacation, New Car"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Target Amount</label>
-            <input
-              type="number"
-              step="0.01"
-              value={formData.targetAmount || ''}
-              onChange={(e) => setFormData({ ...formData, targetAmount: parseFloat(e.target.value) || 0 })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Target Date</label>
-            <input
-              type="date"
-              value={formData.targetDate}
-              onChange={(e) => setFormData({ ...formData, targetDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <input
-              type="text"
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Create Goal
-            </button>
-          </div>
-        </form>
-      </div>
     </div>
   );
 };
