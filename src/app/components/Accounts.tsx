@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { db } from '@/lib/database';
-import { Plus, Wallet, CreditCard, Banknote, Smartphone, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Wallet, CreditCard, Banknote, Smartphone, Edit2, Trash2, Eye, EyeOff, ChevronRight, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Accounts: React.FC = () => {
-  const { accounts, currency } = useApp();
+  const { accounts, transactions, currency } = useApp();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingAccount, setEditingAccount] = useState<number | null>(null);
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -45,6 +46,12 @@ export const Accounts: React.FC = () => {
 
   const totalBalance = accounts.filter(a => a.isActive).reduce((sum, a) => sum + a.balance, 0);
 
+  const selectedAccount = accounts.find(a => a.id === selectedAccountId);
+  const accountTransactions = useMemo(() => {
+    if (!selectedAccountId) return [];
+    return transactions.filter(t => t.accountId === selectedAccountId);
+  }, [transactions, selectedAccountId]);
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -71,8 +78,13 @@ export const Accounts: React.FC = () => {
         {accounts.map(account => (
           <div
             key={account.id}
-            className={`bg-white p-6 rounded-xl border-2 transition-all ${
-              account.isActive ? 'border-gray-200' : 'border-gray-100 opacity-60'
+            onClick={() => setSelectedAccountId(account.id!)}
+            className={`bg-white p-6 rounded-xl border-2 transition-all cursor-pointer ${
+              selectedAccountId === account.id
+                ? 'border-blue-500 bg-blue-50'
+                : account.isActive
+                ? 'border-gray-200 hover:border-gray-300'
+                : 'border-gray-100 opacity-60'
             }`}
           >
             <div className="flex items-start justify-between mb-4">
@@ -123,6 +135,62 @@ export const Accounts: React.FC = () => {
           >
             Add Your First Account
           </button>
+        </div>
+      )}
+
+      {/* Selected Account Transactions */}
+      {selectedAccount && (
+        <div className="bg-white rounded-xl border-2 border-blue-200">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Transactions - {selectedAccount.name}
+            </h3>
+            <button
+              onClick={() => setSelectedAccountId(null)}
+              className="p-1 hover:bg-gray-100 rounded-lg"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-4 py-2 text-left font-semibold text-gray-600">Date</th>
+                  <th className="px-4 py-2 text-left font-semibold text-gray-600">Description</th>
+                  <th className="px-4 py-2 text-left font-semibold text-gray-600">Category</th>
+                  <th className="px-4 py-2 text-right font-semibold text-gray-600">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {accountTransactions.length > 0 ? (
+                  accountTransactions.map(transaction => (
+                    <tr key={transaction.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(transaction.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3 text-gray-900 font-medium">
+                        {transaction.description}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{transaction.category}</td>
+                      <td className={`px-4 py-3 text-right font-semibold ${
+                        transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                      No transactions for this account
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

@@ -11,6 +11,7 @@ import {
   Settings,
   Calculator,
   ArrowRightLeft,
+  CalendarDays,
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 
@@ -23,6 +24,7 @@ const menuItems = [
   { id: 'groups', label: 'Group Expenses', icon: Users },
   { id: 'investments', label: 'Investments', icon: TrendingUp },
   { id: 'reports', label: 'Reports', icon: BarChart3 },
+  { id: 'calendar', label: 'Calendar', icon: CalendarDays },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 

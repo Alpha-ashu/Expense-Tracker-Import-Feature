@@ -21,7 +21,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     toAccountId: 0,
     amount: 0,
     description: '',
-    transferType: 'self-transfer' as 'self-transfer' | 'other-transfer',
+    transferType: 'self-transfer' as const,
   });
 
   const accounts = useLiveQuery(() => db.accounts.toArray(), []) || [];
@@ -126,37 +126,8 @@ export const TransferModal: React.FC<TransferModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Transfer Type */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Transfer Type
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="self-transfer"
-                  checked={formData.transferType === 'self-transfer'}
-                  onChange={(e) =>
-                    setFormData({ ...formData, transferType: e.target.value as any })
-                  }
-                  className="mr-2"
-                />
-                <span className="text-sm">Own Accounts</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="other-transfer"
-                  checked={formData.transferType === 'other-transfer'}
-                  onChange={(e) =>
-                    setFormData({ ...formData, transferType: e.target.value as any })
-                  }
-                  className="mr-2"
-                />
-                <span className="text-sm">Other Account</span>
-              </label>
-            </div>
+          <div className="bg-blue-50 p-3 rounded-lg mb-4">
+            <p className="text-sm text-blue-700 font-medium">💰 Transfer Between Your Own Accounts</p>
           </div>
 
           {/* From Account */}

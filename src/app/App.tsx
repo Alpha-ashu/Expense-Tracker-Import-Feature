@@ -19,6 +19,7 @@ import { Groups } from '@/app/components/Groups';
 import { Investments } from '@/app/components/Investments';
 import { Reports } from '@/app/components/Reports';
 import { Settings } from '@/app/components/Settings';
+import { Calendar } from '@/app/components/Calendar';
 import { Toaster } from 'sonner';
 import { initializeDemoData } from '@/lib/demoData';
 import { initializeNotifications } from '@/lib/notifications';
@@ -176,6 +177,8 @@ const AppContent: React.FC = () => {
         return <Investments />;
       case 'reports':
         return <Reports />;
+      case 'calendar':
+        return <Calendar />;
       case 'settings':
         return (
           <Settings

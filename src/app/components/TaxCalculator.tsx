@@ -173,16 +173,24 @@ export const TaxCalculator: React.FC<TaxCalculatorProps> = ({
             </select>
           </div>
 
-          {/* Total Income (Auto-calculated) */}
+          {/* Total Income (Auto-calculated but Editable) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Total Income (Calculated)
+              Total Income
             </label>
-            <div className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+            <div className="flex items-center">
               <span className="text-gray-600 mr-2">{currency}</span>
-              <span className="font-medium">{formData.totalIncome.toFixed(2)}</span>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.totalIncome}
+                onChange={(e) =>
+                  setFormData({ ...formData, totalIncome: parseFloat(e.target.value) || 0 })
+                }
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
-            <p className="text-xs text-gray-500 mt-1">Auto-calculated from income transactions</p>
+            <p className="text-xs text-gray-500 mt-1">Auto-calculated from income transactions, or edit manually</p>
           </div>
 
           {/* Additional Deductions */}

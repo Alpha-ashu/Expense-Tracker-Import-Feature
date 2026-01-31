@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { db } from '@/lib/database';
-import { Download, Upload, Trash2, Database, Calculator, Users } from 'lucide-react';
+import { Download, Upload, Trash2, Database, Calculator, Users, Globe, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
+import { useApp } from '@/contexts/AppContext';
 import { 
   downloadDataToFile, 
   uploadDataFromFile,
@@ -15,6 +16,7 @@ export const Settings: React.FC<{ onOpenTaxCalculator?: () => void; onOpenFinanc
   onOpenTaxCalculator,
   onOpenFinanceAdvisor,
 }) => {
+  const { currency, setCurrency, language, setLanguage } = useApp();
   const [showImportModal, setShowImportModal] = useState(false);
   const [backups, setBackups] = useState<Array<any>>([]);
   const [showBackups, setShowBackups] = useState(false);
@@ -214,6 +216,85 @@ export const Settings: React.FC<{ onOpenTaxCalculator?: () => void; onOpenFinanc
               >
                 Clear All
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="p-6 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">Preferences</h3>
+          <p className="text-sm text-gray-500 mt-1">Customize your app experience</p>
+        </div>
+
+        <div className="divide-y divide-gray-200">
+          <div className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <DollarSign className="text-green-600" size={20} />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">Currency</h4>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Select your preferred currency for all transactions
+                  </p>
+                </div>
+              </div>
+              <select
+                value={currency}
+                onChange={(e) => {
+                  setCurrency(e.target.value);
+                  toast.success(`Currency changed to ${e.target.value}`);
+                }}
+                className="px-3 py-2 bg-green-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+                <option value="INR">INR - Indian Rupee</option>
+                <option value="JPY">JPY - Japanese Yen</option>
+                <option value="AUD">AUD - Australian Dollar</option>
+                <option value="CAD">CAD - Canadian Dollar</option>
+                <option value="CHF">CHF - Swiss Franc</option>
+                <option value="CNY">CNY - Chinese Yuan</option>
+                <option value="SGD">SGD - Singapore Dollar</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Globe className="text-purple-600" size={20} />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">Language</h4>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Choose your preferred language
+                  </p>
+                </div>
+              </div>
+              <select
+                value={language}
+                onChange={(e) => {
+                  setLanguage(e.target.value);
+                  toast.success(`Language changed to ${e.target.value}`);
+                }}
+                className="px-3 py-2 bg-purple-50 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="en">English</option>
+                <option value="es">Español (Spanish)</option>
+                <option value="fr">Français (French)</option>
+                <option value="de">Deutsch (German)</option>
+                <option value="it">Italiano (Italian)</option>
+                <option value="pt">Português (Portuguese)</option>
+                <option value="ja">日本語 (Japanese)</option>
+                <option value="zh">中文 (Chinese)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="ar">العربية (Arabic)</option>
+              </select>
             </div>
           </div>
         </div>

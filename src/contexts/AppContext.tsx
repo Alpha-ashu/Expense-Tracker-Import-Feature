@@ -15,6 +15,9 @@ interface AppContextType {
   groupExpenses: GroupExpense[];
   totalBalance: number;
   currency: string;
+  setCurrency: (currency: string) => void;
+  language: string;
+  setLanguage: (language: string) => void;
   refreshData: () => void;
   isOnline: boolean;
   addTransaction: (transaction: Omit<Transaction, 'id'>) => Promise<void>;
@@ -25,8 +28,9 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-  const [currency] = useState('USD');
+  const [currentPage, setCurrentPage] = useState('accounts');
+  const [currency, setCurrency] = useState(() => localStorage.getItem('currency') || 'USD');
+  const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'en');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [forceUpdate, setForceUpdate] = useState(0);
 
@@ -99,6 +103,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [refreshData]);
 
+  // Save currency and language to localStorage
+  useEffect(() => {
+    localStorage.setItem('currency', currency);
+  }, [currency]);
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
   return (
     <AppContext.Provider
       value={{
@@ -113,6 +126,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         groupExpenses,
         totalBalance,
         currency,
+        setCurrency,
+        language,
+        setLanguage,
         refreshData,
         isOnline,
         addTransaction,
