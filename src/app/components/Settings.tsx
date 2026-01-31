@@ -12,11 +12,8 @@ import {
   listBackups 
 } from '@/lib/importExport';
 
-export const Settings: React.FC<{ onOpenTaxCalculator?: () => void; onOpenFinanceAdvisor?: () => void }> = ({
-  onOpenTaxCalculator,
-  onOpenFinanceAdvisor,
-}) => {
-  const { currency, setCurrency, language, setLanguage } = useApp();
+export const Settings: React.FC = () => {
+  const { currency, setCurrency, language, setLanguage, setCurrentPage } = useApp();
   const [showImportModal, setShowImportModal] = useState(false);
   const [backups, setBackups] = useState<Array<any>>([]);
   const [showBackups, setShowBackups] = useState(false);
@@ -321,7 +318,7 @@ export const Settings: React.FC<{ onOpenTaxCalculator?: () => void; onOpenFinanc
                 </div>
               </div>
               <button
-                onClick={onOpenTaxCalculator}
+                onClick={() => setCurrentPage('tax-calculator')}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
                 Open
@@ -343,7 +340,7 @@ export const Settings: React.FC<{ onOpenTaxCalculator?: () => void; onOpenFinanc
                 </div>
               </div>
               <button
-                onClick={onOpenFinanceAdvisor}
+                onClick={() => setCurrentPage('finance-advisor')}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
               >
                 Open

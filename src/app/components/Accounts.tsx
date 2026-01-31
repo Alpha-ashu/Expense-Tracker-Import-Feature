@@ -5,9 +5,7 @@ import { Plus, Wallet, CreditCard, Banknote, Smartphone, Edit2, Trash2, Eye, Eye
 import { toast } from 'sonner';
 
 export const Accounts: React.FC = () => {
-  const { accounts, transactions, currency } = useApp();
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<number | null>(null);
+  const { accounts, transactions, currency, setCurrentPage } = useApp();
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
 
   const formatCurrency = (amount: number) => {
@@ -60,7 +58,7 @@ export const Accounts: React.FC = () => {
           <p className="text-gray-500 mt-1">Manage your payment sources</p>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => setCurrentPage('add-account')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus size={20} />
@@ -104,7 +102,7 @@ export const Accounts: React.FC = () => {
                   )}
                 </button>
                 <button
-                  onClick={() => setEditingAccount(account.id!)}
+                  onClick={() => setCurrentPage('edit-account')}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <Edit2 size={16} className="text-gray-600" />
@@ -130,7 +128,7 @@ export const Accounts: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No accounts yet</h3>
           <p className="text-gray-500 mb-4">Add your first account to start tracking your finances</p>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => setCurrentPage('add-account')}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Add Your First Account
@@ -194,214 +192,6 @@ export const Accounts: React.FC = () => {
         </div>
       )}
 
-      {showAddModal && (
-        <AddAccountModal
-          onClose={() => setShowAddModal(false)}
-          currency={currency}
-        />
-      )}
-
-      {editingAccount && (
-        <EditAccountModal
-          accountId={editingAccount}
-          onClose={() => setEditingAccount(null)}
-          currency={currency}
-        />
-      )}
-    </div>
-  );
-};
-
-interface AddAccountModalProps {
-  onClose: () => void;
-  currency: string;
-}
-
-const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose, currency }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    type: 'bank' as 'bank' | 'card' | 'cash' | 'wallet',
-    balance: 0,
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await db.accounts.add({
-        ...formData,
-        currency,
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      toast.success('Account added successfully');
-      onClose();
-    } catch (error) {
-      console.error('Failed to add account:', error);
-      toast.error('Failed to add account');
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">Add New Account</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Account Name
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Chase Checking"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Account Type
-            </label>
-            <select
-              value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="bank">Bank Account</option>
-              <option value="card">Credit/Debit Card</option>
-              <option value="cash">Cash</option>
-              <option value="wallet">Digital Wallet</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Opening Balance
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={formData.balance}
-              onChange={(e) => setFormData({ ...formData, balance: parseFloat(e.target.value) || 0 })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Add Account
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-interface EditAccountModalProps {
-  accountId: number;
-  onClose: () => void;
-  currency: string;
-}
-
-const EditAccountModal: React.FC<EditAccountModalProps> = ({ accountId, onClose, currency }) => {
-  const [account, setAccount] = useState<any>(null);
-
-  React.useEffect(() => {
-    db.accounts.get(accountId).then(setAccount);
-  }, [accountId]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await db.accounts.update(accountId, {
-      name: account.name,
-      type: account.type,
-      balance: account.balance,
-    });
-    toast.success('Account updated successfully');
-    onClose();
-  };
-
-  if (!account) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">Edit Account</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Account Name
-            </label>
-            <input
-              type="text"
-              value={account.name}
-              onChange={(e) => setAccount({ ...account, name: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Account Type
-            </label>
-            <select
-              value={account.type}
-              onChange={(e) => setAccount({ ...account, type: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="bank">Bank Account</option>
-              <option value="card">Credit/Debit Card</option>
-              <option value="cash">Cash</option>
-              <option value="wallet">Digital Wallet</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Current Balance
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={account.balance}
-              onChange={(e) => setAccount({ ...account, balance: parseFloat(e.target.value) || 0 })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </div>
     </div>
   );
 };

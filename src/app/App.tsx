@@ -6,9 +6,6 @@ import { Sidebar } from '@/app/components/Sidebar';
 import { Header } from '@/app/components/Header';
 import { BottomNav } from '@/app/components/BottomNav';
 import { QuickActionModal } from '@/app/components/QuickActionModal';
-import { TransferModal } from '@/app/components/TransferModal';
-import { TaxCalculator } from '@/app/components/TaxCalculator';
-import { FinanceAdvisorBooking } from '@/app/components/FinanceAdvisorBooking';
 import { PWAInstallPrompt } from '@/app/components/PWAInstallPrompt';
 import { Dashboard } from '@/app/components/Dashboard';
 import { Accounts } from '@/app/components/Accounts';
@@ -20,6 +17,15 @@ import { Investments } from '@/app/components/Investments';
 import { Reports } from '@/app/components/Reports';
 import { Settings } from '@/app/components/Settings';
 import { Calendar } from '@/app/components/Calendar';
+import { Transfer } from '@/app/components/Transfer';
+import { TaxCalculator } from '@/app/components/TaxCalculatorPage';
+import { FinanceAdvisor } from '@/app/components/FinanceAdvisorPage';
+import { AddAccount } from '@/app/components/AddAccount';
+import { EditAccount } from '@/app/components/EditAccount';
+import { AddTransaction } from '@/app/components/AddTransaction';
+import { AddGoal } from '@/app/components/AddGoal';
+import { AddGroup } from '@/app/components/AddGroup';
+import { AddInvestment } from '@/app/components/AddInvestment';
 import { Toaster } from 'sonner';
 import { initializeDemoData } from '@/lib/demoData';
 import { initializeNotifications } from '@/lib/notifications';
@@ -36,9 +42,6 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, setAuthenticated } = useSecurity();
   const [isInitialized, setIsInitialized] = useState(false);
   const [showQuickAction, setShowQuickAction] = useState(false);
-  const [showTransfer, setShowTransfer] = useState(false);
-  const [showTaxCalculator, setShowTaxCalculator] = useState(false);
-  const [showFinanceAdvisor, setShowFinanceAdvisor] = useState(false);
 
   useEffect(() => {
     // Initialize app data
@@ -133,7 +136,7 @@ const AppContent: React.FC = () => {
         setCurrentPage('goals');
         break;
       case 'transfer':
-        setShowTransfer(true);
+        setCurrentPage('transfer');
         break;
       case 'voice-entry':
         // TODO: Show voice input modal
@@ -165,27 +168,41 @@ const AppContent: React.FC = () => {
         return <Dashboard />;
       case 'accounts':
         return <Accounts />;
+      case 'add-account':
+        return <AddAccount />;
+      case 'edit-account':
+        // Get account ID from URL or context if needed
+        return <EditAccount />;
       case 'transactions':
         return <Transactions />;
+      case 'add-transaction':
+        return <AddTransaction />;
       case 'loans':
         return <Loans />;
       case 'goals':
         return <Goals />;
+      case 'add-goal':
+        return <AddGoal />;
       case 'groups':
         return <Groups />;
+      case 'add-group':
+        return <AddGroup />;
       case 'investments':
         return <Investments />;
+      case 'add-investment':
+        return <AddInvestment />;
       case 'reports':
         return <Reports />;
       case 'calendar':
         return <Calendar />;
       case 'settings':
-        return (
-          <Settings
-            onOpenTaxCalculator={() => setShowTaxCalculator(true)}
-            onOpenFinanceAdvisor={() => setShowFinanceAdvisor(true)}
-          />
-        );
+        return <Settings />;
+      case 'transfer':
+        return <Transfer />;
+      case 'tax-calculator':
+        return <TaxCalculator />;
+      case 'finance-advisor':
+        return <FinanceAdvisor />;
       default:
         return <Dashboard />;
     }
@@ -195,10 +212,7 @@ const AppContent: React.FC = () => {
     <div className="flex h-screen bg-gray-50 overflow-hidden mobile-container">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
-        <Sidebar
-          onOpenTransfer={() => setShowTransfer(true)}
-          onOpenTaxCalculator={() => setShowTaxCalculator(true)}
-        />
+        <Sidebar />
       </div>
       
       <div className="flex-1 flex flex-col overflow-hidden w-full">
@@ -216,27 +230,6 @@ const AppContent: React.FC = () => {
         isOpen={showQuickAction}
         onClose={() => setShowQuickAction(false)}
         onAction={handleQuickAction}
-      />
-
-      {/* Transfer Modal */}
-      <TransferModal
-        isOpen={showTransfer}
-        onClose={() => setShowTransfer(false)}
-        currency={currency}
-      />
-
-      {/* Tax Calculator */}
-      <TaxCalculator
-        isOpen={showTaxCalculator}
-        onClose={() => setShowTaxCalculator(false)}
-        currency={currency}
-      />
-
-      {/* Finance Advisor Booking */}
-      <FinanceAdvisorBooking
-        isOpen={showFinanceAdvisor}
-        onClose={() => setShowFinanceAdvisor(false)}
-        currency={currency}
       />
 
       {/* PWA Install Prompt */}

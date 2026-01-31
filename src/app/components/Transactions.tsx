@@ -11,22 +11,18 @@ const CATEGORIES = {
 };
 
 export const Transactions: React.FC = () => {
-  const { accounts, transactions, currency } = useApp();
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showScanModal, setShowScanModal] = useState(false);
+  const { accounts, transactions, currency, setCurrentPage } = useApp();
   const [filterType, setFilterType] = useState<'all' | 'expense' | 'income'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [quickFormType, setQuickFormType] = useState<'expense' | 'income' | null>(null);
 
   // Check for quick form type from localStorage
   useEffect(() => {
     const type = localStorage.getItem('quickFormType') as 'expense' | 'income' | null;
     if (type) {
-      setQuickFormType(type);
-      setShowAddModal(true);
+      setCurrentPage('add-transaction');
       localStorage.removeItem('quickFormType');
     }
-  }, []);
+  }, [setCurrentPage]);
 
   const filteredTransactions = useMemo(() => {
     return transactions
@@ -66,7 +62,7 @@ export const Transactions: React.FC = () => {
             Scan Bill
           </button>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => setCurrentPage('add-transaction')}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus size={20} />
@@ -214,20 +210,6 @@ export const Transactions: React.FC = () => {
           </div>
         )}
       </div>
-
-      {showAddModal && (
-        <AddTransactionModal
-          accounts={accounts}
-          onClose={() => setShowAddModal(false)}
-        />
-      )}
-
-      {showScanModal && (
-        <BillScannerModal
-          accounts={accounts}
-          onClose={() => setShowScanModal(false)}
-        />
-      )}
     </div>
   );
 };
