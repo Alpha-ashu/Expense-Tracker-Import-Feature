@@ -1,31 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { db } from '@/lib/database';
 import { Plus, Upload, TrendingUp, TrendingDown, Filter, Search, Camera } from 'lucide-react';
 import { toast } from 'sonner';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, getSubcategoriesForCategory } from '@/lib/expenseCategories';
 
 const CATEGORIES = {
-  expense: [
-    'Food & Dining',
-    'Transportation',
-    'Shopping',
-    'Entertainment',
-    'Bills & Utilities',
-    'Healthcare',
-    'Education',
-    'Travel',
-    'Personal Care',
-    'Other',
-  ],
-  income: [
-    'Salary',
-    'Business',
-    'Freelance',
-    'Investment Returns',
-    'Refund',
-    'Gift',
-    'Other',
-  ],
+  expense: Object.values(EXPENSE_CATEGORIES).map(cat => cat.name),
+  income: Object.values(INCOME_CATEGORIES).map(cat => cat.name),
 };
 
 export const Transactions: React.FC = () => {
@@ -34,6 +16,17 @@ export const Transactions: React.FC = () => {
   const [showScanModal, setShowScanModal] = useState(false);
   const [filterType, setFilterType] = useState<'all' | 'expense' | 'income'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [quickFormType, setQuickFormType] = useState<'expense' | 'income' | null>(null);
+
+  // Check for quick form type from localStorage
+  useEffect(() => {
+    const type = localStorage.getItem('quickFormType') as 'expense' | 'income' | null;
+    if (type) {
+      setQuickFormType(type);
+      setShowAddModal(true);
+      localStorage.removeItem('quickFormType');
+    }
+  }, []);
 
   const filteredTransactions = useMemo(() => {
     return transactions

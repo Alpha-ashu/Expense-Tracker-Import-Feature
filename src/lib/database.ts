@@ -25,7 +25,7 @@ export interface Friend {
 
 export interface Transaction {
   id?: number;
-  type: 'expense' | 'income';
+  type: 'expense' | 'income' | 'transfer';
   amount: number;
   accountId: number;
   category: string;
@@ -35,6 +35,9 @@ export interface Transaction {
   date: Date;
   tags?: string[];
   attachment?: string;
+  // Transfer specific fields
+  transferToAccountId?: number;
+  transferType?: 'self-transfer' | 'other-transfer'; // self-transfer is between own accounts
   updatedAt?: Date;
   deletedAt?: Date;
 }
@@ -138,6 +141,72 @@ export interface Notification {
   createdAt: Date;
 }
 
+export interface TaxCalculation {
+  id?: number;
+  year: number;
+  totalIncome: number;
+  totalExpense: number;
+  netProfit: number;
+  taxableIncome: number;
+  estimatedTax: number;
+  taxRate: number;
+  deductions: number;
+  currency: string;
+  notes?: string;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+export interface FinanceAdvisor {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  specialization: string[];
+  qualifications: string[];
+  experience: number; // years
+  rating: number; // 1-5
+  availability: string[];
+  hourlyRate: number;
+  bio?: string;
+  verified: boolean;
+  createdAt: Date;
+}
+
+export interface AdvisorSession {
+  id?: number;
+  advisorId: number;
+  date: Date;
+  duration: number; // minutes
+  type: 'video' | 'audio' | 'chat';
+  status: 'scheduled' | 'completed' | 'cancelled';
+  notes?: string;
+  meetingLink?: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+export interface ExpenseCategory {
+  id?: string;
+  name: string;
+  subcategories: string[];
+  icon?: string;
+  color?: string;
+  type: 'expense' | 'income';
+}
+
+export interface Notification {
+  id?: number;
+  type: 'emi' | 'loan' | 'goal' | 'group';
+  title: string;
+  message: string;
+  dueDate: Date;
+  isRead: boolean;
+  relatedId?: number;
+  createdAt: Date;
+}
+
 // Database Class
 export class FinanceLifeDB extends Dexie {
   accounts!: Table<Account>;
@@ -189,6 +258,10 @@ export class ProductionDB extends FinanceLifeDB {
   categories!: Table<{ id: string; name: string; type: string; color: string; icon: string }>;
   budgets!: Table<{ id: string; category: string; amount: number; period: string; spent: number; createdAt: Date }>;
   groups!: Table<{ id: string; name: string; members: string[]; createdAt: Date }>;
+  taxCalculations!: Table<TaxCalculation>;
+  financeAdvisors!: Table<FinanceAdvisor>;
+  advisorSessions!: Table<AdvisorSession>;
+  expenseCategories!: Table<ExpenseCategory>;
 
   constructor() {
     super();
@@ -209,7 +282,11 @@ export class ProductionDB extends FinanceLifeDB {
       settings: 'key',
       categories: 'id, type',
       budgets: 'id, category, period',
-      groups: 'id'
+      groups: 'id',
+      taxCalculations: '++id, year',
+      financeAdvisors: '++id, verified, rating',
+      advisorSessions: '++id, advisorId, date, status',
+      expenseCategories: 'id, type'
     });
   }
 }

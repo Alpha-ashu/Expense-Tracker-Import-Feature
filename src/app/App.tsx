@@ -6,6 +6,9 @@ import { Sidebar } from '@/app/components/Sidebar';
 import { Header } from '@/app/components/Header';
 import { BottomNav } from '@/app/components/BottomNav';
 import { QuickActionModal } from '@/app/components/QuickActionModal';
+import { TransferModal } from '@/app/components/TransferModal';
+import { TaxCalculator } from '@/app/components/TaxCalculator';
+import { FinanceAdvisorBooking } from '@/app/components/FinanceAdvisorBooking';
 import { PWAInstallPrompt } from '@/app/components/PWAInstallPrompt';
 import { Dashboard } from '@/app/components/Dashboard';
 import { Accounts } from '@/app/components/Accounts';
@@ -28,10 +31,13 @@ import { Capacitor } from '@capacitor/core';
 import { toast } from 'sonner';
 
 const AppContent: React.FC = () => {
-  const { currentPage, setCurrentPage } = useApp();
+  const { currentPage, setCurrentPage, currency } = useApp();
   const { isAuthenticated, setAuthenticated } = useSecurity();
   const [isInitialized, setIsInitialized] = useState(false);
   const [showQuickAction, setShowQuickAction] = useState(false);
+  const [showTransfer, setShowTransfer] = useState(false);
+  const [showTaxCalculator, setShowTaxCalculator] = useState(false);
+  const [showFinanceAdvisor, setShowFinanceAdvisor] = useState(false);
 
   useEffect(() => {
     // Initialize app data
@@ -107,8 +113,14 @@ const AppContent: React.FC = () => {
     // Handle different quick actions
     switch (action) {
       case 'add-expense':
-      case 'add-income':
+        // Navigate to transactions and set form type to expense
         setCurrentPage('transactions');
+        localStorage.setItem('quickFormType', 'expense');
+        break;
+      case 'add-income':
+        // Navigate to transactions and set form type to income
+        setCurrentPage('transactions');
+        localStorage.setItem('quickFormType', 'income');
         break;
       case 'pay-emi':
         setCurrentPage('loans');
@@ -119,11 +131,11 @@ const AppContent: React.FC = () => {
       case 'add-goal':
         setCurrentPage('goals');
         break;
+      case 'transfer':
+        setShowTransfer(true);
+        break;
       case 'voice-entry':
         // TODO: Show voice input modal
-        break;
-      case 'scan-bill':
-        setCurrentPage('transactions');
         break;
       default:
         break;
@@ -193,6 +205,27 @@ const AppContent: React.FC = () => {
         isOpen={showQuickAction}
         onClose={() => setShowQuickAction(false)}
         onAction={handleQuickAction}
+      />
+
+      {/* Transfer Modal */}
+      <TransferModal
+        isOpen={showTransfer}
+        onClose={() => setShowTransfer(false)}
+        currency={currency}
+      />
+
+      {/* Tax Calculator */}
+      <TaxCalculator
+        isOpen={showTaxCalculator}
+        onClose={() => setShowTaxCalculator(false)}
+        currency={currency}
+      />
+
+      {/* Finance Advisor Booking */}
+      <FinanceAdvisorBooking
+        isOpen={showFinanceAdvisor}
+        onClose={() => setShowFinanceAdvisor(false)}
+        currency={currency}
       />
 
       {/* PWA Install Prompt */}

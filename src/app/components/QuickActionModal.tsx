@@ -20,13 +20,13 @@ interface QuickActionModalProps {
 }
 
 const quickActions = [
-  { id: 'add-expense', label: 'Add Expense', icon: TrendingDown, color: 'bg-red-600', description: 'Quick expense entry' },
-  { id: 'add-income', label: 'Add Income', icon: TrendingUp, color: 'bg-green-600', description: 'Record income' },
-  { id: 'pay-emi', label: 'Pay EMI', icon: CreditCard, color: 'bg-blue-600', description: 'EMI payment' },
-  { id: 'split-bill', label: 'Split Bill', icon: Users, color: 'bg-blue-600', description: 'Group expense' },
-  { id: 'add-goal', label: 'New Goal', icon: Target, color: 'bg-green-600', description: 'Savings goal' },
-  { id: 'voice-entry', label: 'Voice Input', icon: Mic, color: 'bg-blue-600', description: 'Speak to add' },
-  { id: 'scan-bill', label: 'Scan Bill', icon: Camera, color: 'bg-blue-600', description: 'Scan receipt' },
+  { id: 'add-expense', label: 'Add Expense', icon: TrendingDown, color: 'bg-red-600', description: 'Quick expense entry', openForm: 'expense' },
+  { id: 'add-income', label: 'Add Income', icon: TrendingUp, color: 'bg-green-600', description: 'Record income', openForm: 'income' },
+  { id: 'pay-emi', label: 'Pay EMI', icon: CreditCard, color: 'bg-blue-600', description: 'EMI payment', openForm: 'transaction' },
+  { id: 'split-bill', label: 'Split Bill', icon: Users, color: 'bg-blue-600', description: 'Group expense', openForm: 'group' },
+  { id: 'add-goal', label: 'New Goal', icon: Target, color: 'bg-green-600', description: 'Savings goal', openForm: 'goal' },
+  { id: 'voice-entry', label: 'Voice Input', icon: Mic, color: 'bg-blue-600', description: 'Speak to add', openForm: 'voice' },
+  { id: 'transfer', label: 'Transfer', icon: Camera, color: 'bg-blue-600', description: 'Transfer money', openForm: 'transfer' },
 ];
 
 export const QuickActionModal: React.FC<QuickActionModalProps> = ({
