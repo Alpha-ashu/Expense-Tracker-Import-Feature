@@ -74,27 +74,27 @@ export const Transactions: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-green-600 p-6 rounded-xl text-white">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+        <div className="bg-green-600 p-4 md:p-6 rounded-xl text-white">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp size={20} />
             <p className="text-sm opacity-90">Total Income</p>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(stats.income)}</p>
+          <p className="text-2xl md:text-3xl font-bold">{formatCurrency(stats.income)}</p>
         </div>
-        <div className="bg-red-600 p-6 rounded-xl text-white">
+        <div className="bg-red-600 p-4 md:p-6 rounded-xl text-white">
           <div className="flex items-center gap-2 mb-2">
             <TrendingDown size={20} />
             <p className="text-sm opacity-90">Total Expenses</p>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(stats.expenses)}</p>
+          <p className="text-2xl md:text-3xl font-bold">{formatCurrency(stats.expenses)}</p>
         </div>
-        <div className={`${stats.netFlow >= 0 ? 'bg-blue-600' : 'bg-red-600'} p-6 rounded-xl text-white`}>
+        <div className={`${stats.netFlow >= 0 ? 'bg-blue-600' : 'bg-red-600'} p-4 md:p-6 rounded-xl text-white`}>
           <div className="flex items-center gap-2 mb-2">
             <Filter size={20} />
             <p className="text-sm opacity-90">Net Flow</p>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(stats.netFlow)}</p>
+          <p className="text-2xl md:text-3xl font-bold">{formatCurrency(stats.netFlow)}</p>
         </div>
       </div>
 

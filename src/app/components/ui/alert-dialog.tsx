@@ -46,6 +46,7 @@ function AlertDialogOverlay({
 
 function AlertDialogContent({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Content>) {
   return (
@@ -58,7 +59,11 @@ function AlertDialogContent({
           className,
         )}
         {...props}
-      />
+      >
+        {/* Hidden title for accessibility - AlertDialog components should provide a visible title */}
+        <AlertDialogPrimitive.Title className="sr-only">Confirmation</AlertDialogPrimitive.Title>
+        {children}
+      </AlertDialogPrimitive.Content>
     </AlertDialogPortal>
   );
 }

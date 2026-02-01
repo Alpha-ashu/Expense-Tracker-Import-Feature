@@ -125,10 +125,10 @@ export const Dashboard: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Last 7 Days</h3>
-          <ResponsiveContainer width="100%" height={250}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold mb-4">Last 7 Days</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={last7DaysData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="day" />
@@ -140,9 +140,9 @@ export const Dashboard: React.FC = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Expenses by Category</h3>
-          <ResponsiveContainer width="100%" height={250}>
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold mb-4">Expenses by Category</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={categoryData}
@@ -150,7 +150,7 @@ export const Dashboard: React.FC = () => {
                 cy="50%"
                 labelLine={false}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
+                outerRadius={60}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -164,20 +164,20 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Accounts Overview</h3>
-            <Wallet className="text-blue-500" size={24} />
+            <h3 className="text-base sm:text-lg font-semibold">Accounts Overview</h3>
+            <Wallet className="text-blue-500" size={20} />
           </div>
           <div className="space-y-3">
             {accounts.filter(a => a.isActive).slice(0, 5).map(account => (
-              <div key={account.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={account.id} className="flex items-center justify-between p-2 md:p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">{account.name}</p>
-                  <p className="text-sm text-gray-500 capitalize">{account.type}</p>
+                  <p className="text-sm md:text-base font-medium text-gray-900">{account.name}</p>
+                  <p className="text-xs md:text-sm text-gray-500 capitalize">{account.type}</p>
                 </div>
-                <p className="font-semibold text-gray-900">{formatCurrency(account.balance)}</p>
+                <p className="text-sm md:text-base font-semibold text-gray-900">{formatCurrency(account.balance)}</p>
               </div>
             ))}
             {accounts.length === 0 && (
@@ -186,28 +186,28 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Investment Portfolio</h3>
-            <TrendingUp className="text-green-500" size={24} />
+            <h3 className="text-base sm:text-lg font-semibold">Investment Portfolio</h3>
+            <TrendingUp className="text-green-500" size={20} />
           </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="space-y-3 md:space-y-4">
+            <div className="flex items-center justify-between p-3 md:p-4 bg-gray-50 rounded-lg">
               <div>
-                <p className="text-sm text-gray-500">Total Invested</p>
-                <p className="text-xl font-bold text-gray-900">{formatCurrency(stats.totalInvested)}</p>
+                <p className="text-xs md:text-sm text-gray-500">Total Invested</p>
+                <p className="text-lg md:text-xl font-bold text-gray-900">{formatCurrency(stats.totalInvested)}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-500">P/L</p>
-                <p className={`text-xl font-bold ${stats.investmentPL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <p className="text-xs md:text-sm text-gray-500">P/L</p>
+                <p className={`text-lg md:text-xl font-bold ${stats.investmentPL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {stats.investmentPL >= 0 ? '+' : ''}{formatCurrency(stats.investmentPL)}
                 </p>
               </div>
             </div>
             {investments.slice(0, 3).map(inv => (
-              <div key={inv.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={inv.id} className="flex items-center justify-between p-2 md:p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">{inv.assetName}</p>
+                  <p className="text-sm md:text-base font-medium text-gray-900">{inv.assetName}</p>
                   <p className="text-sm text-gray-500 capitalize">{inv.assetType}</p>
                 </div>
                 <div className="text-right">
@@ -222,31 +222,31 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
+      <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200">
+        <h3 className="text-base sm:text-lg font-semibold mb-4">Recent Transactions</h3>
         <div className="space-y-2">
           {transactions.slice(0, 8).map(transaction => {
             const account = accounts.find(a => a.id === transaction.accountId);
             return (
-              <div key={transaction.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+              <div key={transaction.id} className="flex items-center justify-between p-2 md:p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+                  <div className={`w-9 h-9 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                     transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
                   }`}>
                     {transaction.type === 'income' ? (
-                      <TrendingUp className="text-green-600" size={20} />
+                      <TrendingUp className="text-green-600" size={18} />
                     ) : (
-                      <TrendingDown className="text-red-600" size={20} />
+                      <TrendingDown className="text-red-600" size={18} />
                     )}
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{transaction.description}</p>
-                    <p className="text-sm text-gray-500">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm md:text-base font-medium text-gray-900 truncate">{transaction.description}</p>
+                    <p className="text-xs md:text-sm text-gray-500 truncate">
                       {transaction.category} • {account?.name} • {new Date(transaction.date).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
-                <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                <p className={`text-sm md:text-base font-semibold flex-shrink-0 ml-2 ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                   {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                 </p>
               </div>
@@ -273,19 +273,19 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon, trend, positive }) => {
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200">
+    <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm text-gray-500">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
-          {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+          <p className="text-xs sm:text-sm text-gray-500">{title}</p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{value}</p>
+          {subtitle && <p className="text-xs sm:text-sm text-gray-500 mt-1">{subtitle}</p>}
           {trend && (
-            <p className={`text-sm mt-2 ${positive ? 'text-green-500' : 'text-red-500'}`}>
+            <p className={`text-xs sm:text-sm mt-2 ${positive ? 'text-green-500' : 'text-red-500'}`}>
               {trend} from last month
             </p>
           )}
         </div>
-        <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
       </div>
