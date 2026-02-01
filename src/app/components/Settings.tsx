@@ -339,6 +339,7 @@ export const Settings: React.FC = () => {
               { key: 'investments', label: 'Investments', icon: '📈' },
               { key: 'reports', label: 'Reports', icon: '📋' },
               { key: 'calendar', label: 'Calendar', icon: '📅' },
+              { key: 'todoLists', label: 'To-Do Lists', icon: '✅' },
               { key: 'transfer', label: 'Transfer Money', icon: '🔄' },
               { key: 'taxCalculator', label: 'Tax Calculator', icon: '🧮' },
               { key: 'financeAdvisor', label: 'Finance Advisor', icon: '💼' },

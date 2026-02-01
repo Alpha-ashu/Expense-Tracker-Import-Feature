@@ -1,8 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { useApp } from '@/contexts/AppContext';import { CenteredLayout } from '@/app/components/CenteredLayout';import { db } from '@/lib/database';
+import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
+import { db } from '@/lib/database';
 import { ChevronLeft, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, getSubcategoriesForCategory } from '@/lib/expenseCategories';
+import { BillUpload } from '@/app/components/BillUpload';
 
 const CATEGORIES = {
   expense: Object.values(EXPENSE_CATEGORIES).map(cat => cat.name),

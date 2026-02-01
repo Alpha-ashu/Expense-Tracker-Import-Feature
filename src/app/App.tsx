@@ -20,6 +20,9 @@ import { Calendar } from '@/app/components/Calendar';
 import { Transfer } from '@/app/components/Transfer';
 import { TaxCalculator } from '@/app/components/TaxCalculatorPage';
 import { FinanceAdvisor } from '@/app/components/FinanceAdvisorPage';
+import { ToDoLists } from '@/app/components/ToDoLists';
+import { ToDoListDetail } from '@/app/components/ToDoListDetail';
+import { ToDoListShare } from '@/app/components/ToDoListShare';
 import { AddAccount } from '@/app/components/AddAccount';
 import { EditAccount } from '@/app/components/EditAccount';
 import { AddTransaction } from '@/app/components/AddTransaction';
@@ -199,6 +202,12 @@ const AppContent: React.FC = () => {
         return <Reports />;
       case 'calendar':
         return <Calendar />;
+      case 'todo-lists':
+        return <ToDoLists />;
+      case 'todo-list-detail':
+        return <ToDoListDetail />;
+      case 'todo-list-share':
+        return <ToDoListShare />;
       case 'settings':
         return <Settings />;
       case 'transfer':

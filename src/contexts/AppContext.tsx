@@ -45,6 +45,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       investments: true,
       reports: true,
       calendar: true,
+      todoLists: true,
       transfer: true,
       taxCalculator: true,
       financeAdvisor: true,
