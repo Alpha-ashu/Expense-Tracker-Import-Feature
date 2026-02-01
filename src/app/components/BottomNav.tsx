@@ -24,7 +24,20 @@ interface BottomNavProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ onQuickAdd }) => {
-  const { currentPage, setCurrentPage } = useApp();
+  const { currentPage, setCurrentPage, visibleFeatures } = useApp();
+
+  const filteredNavigationItems = navigationItems.filter(item => {
+    const featureMap: Record<string, string> = {
+      'dashboard': 'dashboard',
+      'accounts': 'accounts',
+      'transactions': 'transactions',
+      'reports': 'reports',
+      'quick-add': 'quick-add',
+    };
+    const featureKey = featureMap[item.id];
+    if (item.id === 'dashboard' || item.id === 'quick-add') return true;
+    return visibleFeatures[featureKey] !== false;
+  });
 
   const handleNavigation = async (itemId: string) => {
     // Haptic feedback on native platforms
@@ -46,7 +59,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onQuickAdd }) => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 pb-safe z-40 lg:hidden">
       <div className="flex items-center justify-around h-16">
-        {navigationItems.map((item) => {
+        {filteredNavigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
           const isAction = item.isAction;
