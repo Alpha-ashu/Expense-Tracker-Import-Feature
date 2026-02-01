@@ -144,7 +144,7 @@ export const Transfer: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       </div>
 
       {/* Form Card */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-2xl">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-8 max-w-2xl w-full">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="bg-blue-50 p-4 rounded-lg">
             <p className="text-sm text-blue-700 font-medium">💰 Transfer Between Your Own Accounts</p>

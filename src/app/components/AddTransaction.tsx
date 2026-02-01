@@ -80,7 +80,7 @@ export const AddTransaction: React.FC = () => {
       </div>
 
       {/* Form */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-2xl">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-8 max-w-2xl w-full">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Type Selection */}
           <div>

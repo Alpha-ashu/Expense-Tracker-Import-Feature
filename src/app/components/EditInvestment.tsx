@@ -70,7 +70,7 @@ export const EditInvestment: React.FC = () => {
 
   return (
     <CenteredLayout>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto px-4 md:px-0">
       <button
         onClick={() => {
           localStorage.removeItem('editingInvestmentId');
@@ -82,7 +82,7 @@ export const EditInvestment: React.FC = () => {
         Back to Investments
       </button>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Investment</h1>
         <p className="text-gray-500 mb-6">Update your investment details</p>
 
