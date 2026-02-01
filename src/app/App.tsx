@@ -119,32 +119,36 @@ const AppContent: React.FC = () => {
 
   const handleQuickAction = (action: string) => {
     console.log('Quick action:', action);
-    // Handle different quick actions
+    // Handle different quick actions - direct navigation to form pages
     switch (action) {
       case 'add-expense':
-        // Navigate to transactions and set form type to expense
-        setCurrentPage('transactions');
+        // Navigate directly to add-transaction with expense pre-selected
         localStorage.setItem('quickFormType', 'expense');
+        setCurrentPage('add-transaction');
         break;
       case 'add-income':
-        // Navigate to transactions and set form type to income
-        setCurrentPage('transactions');
+        // Navigate directly to add-transaction with income pre-selected
         localStorage.setItem('quickFormType', 'income');
+        setCurrentPage('add-transaction');
         break;
       case 'pay-emi':
-        setCurrentPage('loans');
+        // Navigate to add transaction with loan payment type
+        localStorage.setItem('quickFormType', 'loan-payment');
+        setCurrentPage('add-transaction');
         break;
       case 'split-bill':
-        setCurrentPage('groups');
+        setCurrentPage('add-group');
         break;
       case 'add-goal':
-        setCurrentPage('goals');
+        setCurrentPage('add-goal');
         break;
       case 'transfer':
-        setCurrentPage('transfer');
+        setCurrentPage('add-transaction');
+        localStorage.setItem('quickFormType', 'transfer');
         break;
       case 'voice-entry':
-        // TODO: Show voice input modal
+        // Show voice input modal
+        setCurrentPage('voice-input');
         break;
       default:
         break;

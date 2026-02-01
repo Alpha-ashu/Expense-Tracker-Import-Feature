@@ -130,6 +130,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     localStorage.setItem('language', language);
   }, [language]);
 
+  // Save visible features to localStorage
+  useEffect(() => {
+    localStorage.setItem('visibleFeatures', JSON.stringify(visibleFeatures));
+  }, [visibleFeatures]);
+
+  const setVisibleFeatures = useCallback((features: Record<string, boolean>) => {
+    setVisibleFeaturesState(features);
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -153,6 +162,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         updateAccount,
         addAccount,
         visibleFeatures,
+        setVisibleFeatures,
       }}
     >
       {children}

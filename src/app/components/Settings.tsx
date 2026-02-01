@@ -14,26 +14,10 @@ import {
 } from '@/lib/importExport';
 
 export const Settings: React.FC = () => {
-  const { currency, setCurrency, language, setLanguage, setCurrentPage } = useApp();
+  const { currency, setCurrency, language, setLanguage, setCurrentPage, visibleFeatures, setVisibleFeatures } = useApp();
   const [showImportModal, setShowImportModal] = useState(false);
   const [backups, setBackups] = useState<Array<any>>([]);
   const [showBackups, setShowBackups] = useState(false);
-  const [visibleFeatures, setVisibleFeatures] = useState<Record<string, boolean>>(() => {
-    const stored = localStorage.getItem('visibleFeatures');
-    return stored ? JSON.parse(stored) : {
-      accounts: true,
-      transactions: true,
-      loans: true,
-      goals: true,
-      groups: true,
-      investments: true,
-      reports: true,
-      calendar: true,
-      transfer: true,
-      taxCalculator: true,
-      financeAdvisor: true,
-    };
-  });
 
   React.useEffect(() => {
     loadBackups();
@@ -47,7 +31,6 @@ export const Settings: React.FC = () => {
   const toggleFeature = (feature: string) => {
     const updated = { ...visibleFeatures, [feature]: !visibleFeatures[feature] };
     setVisibleFeatures(updated);
-    localStorage.setItem('visibleFeatures', JSON.stringify(updated));
     toast.success('Feature visibility updated');
   };
 

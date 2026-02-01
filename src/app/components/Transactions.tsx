@@ -164,6 +164,10 @@ export const Transactions: React.FC = () => {
             <tbody className="divide-y divide-gray-200">
               {filteredTransactions.map(transaction => {
                 const account = accounts.find(a => a.id === transaction.accountId);
+                // Determine display type: for transfers, use subcategory to show Transfer In as income, Transfer Out as expense
+                const displayType = transaction.type === 'transfer' 
+                  ? (transaction.subcategory === 'Transfer In' ? 'income' : 'expense')
+                  : transaction.type;
                 return (
                   <tr key={transaction.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -172,9 +176,9 @@ export const Transactions: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                          displayType === 'income' ? 'bg-green-100' : 'bg-red-100'
                         }`}>
-                          {transaction.type === 'income' ? (
+                          {displayType === 'income' ? (
                             <TrendingUp className="text-green-600" size={16} />
                           ) : (
                             <TrendingDown className="text-red-600" size={16} />
@@ -197,9 +201,9 @@ export const Transactions: React.FC = () => {
                       {account?.name}
                     </td>
                     <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold text-right ${
-                      transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                      displayType === 'income' ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                      {displayType === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                     </td>
                   </tr>
                 );

@@ -2,13 +2,15 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
-import { Plus, DollarSign, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
+import { Plus, DollarSign, Calendar, TrendingUp, AlertCircle, Edit2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AddLoanModalWithFriends } from '@/app/components/AddLoanModalWithFriends';
 
 export const Loans: React.FC = () => {
   const { loans, currency, accounts, friends, setCurrentPage } = useApp();
   const [showPaymentModal, setShowPaymentModal] = useState<number | null>(null);
+  const [editingLoanId, setEditingLoanId] = useState<number | null>(null);
+  const [editFormData, setEditFormData] = useState<any>({});
 
   const loanStats = useMemo(() => {
     const borrowed = loans.filter(l => l.type === 'borrowed' && l.status === 'active');
@@ -38,6 +40,42 @@ export const Loans: React.FC = () => {
     if (loan.status === 'completed') return 'bg-green-100 text-green-800';
     if (loan.status === 'overdue') return 'bg-red-100 text-red-800';
     return 'bg-blue-100 text-blue-800';
+  };
+
+  const handleEditClick = (loan: any) => {
+    setEditingLoanId(loan.id);
+    setEditFormData({ ...loan });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingLoanId) return;
+    try {
+      await db.loans.update(editingLoanId, {
+        name: editFormData.name,
+        principalAmount: editFormData.principalAmount,
+        outstandingBalance: editFormData.outstandingBalance,
+        interestRate: editFormData.interestRate,
+        emiAmount: editFormData.emiAmount,
+        dueDate: editFormData.dueDate ? new Date(editFormData.dueDate) : undefined,
+      });
+      setEditingLoanId(null);
+      toast.success('Loan updated successfully');
+    } catch (error) {
+      console.error('Failed to update loan:', error);
+      toast.error('Failed to update loan');
+    }
+  };
+
+  const handleDeleteLoan = async (loanId: number) => {
+    if (window.confirm('Are you sure you want to delete this loan?')) {
+      try {
+        await db.loans.delete(loanId);
+        toast.success('Loan deleted successfully');
+      } catch (error) {
+        console.error('Failed to delete loan:', error);
+        toast.error('Failed to delete loan');
+      }
+    }
   };
 
   return (
@@ -104,51 +142,124 @@ export const Loans: React.FC = () => {
                           <p className="text-sm text-gray-500">{loan.contactPerson}</p>
                         )}
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${getLoanStatusColor(loan)}`}>
-                        {loan.status}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditClick(loan)}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors text-gray-600"
+                          title="Edit loan"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteLoan(loan.id!)}
+                          className="p-1 hover:bg-red-100 rounded transition-colors text-red-600"
+                          title="Delete loan"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                        <span className={`px-2 py-1 text-xs rounded-full ${getLoanStatusColor(loan)}`}>
+                          {loan.status}
+                        </span>
+                      </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <div>
-                        <p className="text-xs text-gray-500">Principal</p>
-                        <p className="font-semibold text-gray-900">{formatCurrency(loan.principalAmount)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Outstanding</p>
-                        <p className="font-semibold text-gray-900">{formatCurrency(loan.outstandingBalance)}</p>
-                      </div>
-                      {loan.emiAmount && (
-                        <div>
-                          <p className="text-xs text-gray-500">EMI Amount</p>
-                          <p className="font-semibold text-gray-900">{formatCurrency(loan.emiAmount)}</p>
+                    {editingLoanId === loan.id ? (
+                      <div className="space-y-3 mb-3">
+                        <input
+                          type="text"
+                          value={editFormData.name}
+                          onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                          placeholder="Loan name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        />
+                        <input
+                          type="number"
+                          value={editFormData.principalAmount}
+                          onChange={(e) => setEditFormData({ ...editFormData, principalAmount: parseFloat(e.target.value) })}
+                          placeholder="Principal amount"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        />
+                        <input
+                          type="number"
+                          value={editFormData.outstandingBalance}
+                          onChange={(e) => setEditFormData({ ...editFormData, outstandingBalance: parseFloat(e.target.value) })}
+                          placeholder="Outstanding balance"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        />
+                        {editFormData.emiAmount !== undefined && (
+                          <input
+                            type="number"
+                            value={editFormData.emiAmount}
+                            onChange={(e) => setEditFormData({ ...editFormData, emiAmount: parseFloat(e.target.value) })}
+                            placeholder="EMI amount"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                          />
+                        )}
+                        <input
+                          type="date"
+                          value={editFormData.dueDate ? new Date(editFormData.dueDate).toISOString().split('T')[0] : ''}
+                          onChange={(e) => setEditFormData({ ...editFormData, dueDate: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleSaveEdit}
+                            className="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingLoanId(null)}
+                            className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300"
+                          >
+                            Cancel
+                          </button>
                         </div>
-                      )}
-                      {loan.dueDate && (
-                        <div>
-                          <p className="text-xs text-gray-500">Due Date</p>
-                          <p className="font-semibold text-gray-900">
-                            {new Date(loan.dueDate).toLocaleDateString()}
-                          </p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-2 gap-4 mb-3">
+                          <div>
+                            <p className="text-xs text-gray-500">Principal</p>
+                            <p className="font-semibold text-gray-900">{formatCurrency(loan.principalAmount)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Outstanding</p>
+                            <p className="font-semibold text-gray-900">{formatCurrency(loan.outstandingBalance)}</p>
+                          </div>
+                          {loan.emiAmount && (
+                            <div>
+                              <p className="text-xs text-gray-500">EMI Amount</p>
+                              <p className="font-semibold text-gray-900">{formatCurrency(loan.emiAmount)}</p>
+                            </div>
+                          )}
+                          {loan.dueDate && (
+                            <div>
+                              <p className="text-xs text-gray-500">Due Date</p>
+                              <p className="font-semibold text-gray-900">
+                                {new Date(loan.dueDate).toLocaleDateString()}
+                              </p>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
 
-                    <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all"
-                        style={{
-                          width: `${((loan.principalAmount - loan.outstandingBalance) / loan.principalAmount) * 100}%`,
-                        }}
-                      />
-                    </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full transition-all"
+                            style={{
+                              width: `${((loan.principalAmount - loan.outstandingBalance) / loan.principalAmount) * 100}%`,
+                            }}
+                          />
+                        </div>
 
-                    <button
-                      onClick={() => setShowPaymentModal(loan.id!)}
-                      className="w-full px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
-                    >
-                      Make Payment
-                    </button>
+                        <button
+                          onClick={() => setShowPaymentModal(loan.id!)}
+                          className="w-full px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                        >
+                          Make Payment
+                        </button>
+                      </>
+                    )}
                   </div>
                 ))}
               {loans.filter(l => l.type === type && l.status === 'active').length === 0 && (

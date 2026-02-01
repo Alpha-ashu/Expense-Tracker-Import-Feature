@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { toast } from 'sonner';
