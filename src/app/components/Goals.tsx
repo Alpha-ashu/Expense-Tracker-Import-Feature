@@ -90,17 +90,17 @@ export const Goals: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleEditClick(goal)}
-                    className="p-1 hover:bg-gray-100 rounded transition-colors text-gray-600"
+                    className="p-2 hover:bg-gray-100 rounded transition-colors text-gray-600"
                     title="Edit goal"
                   >
-                    <Edit2 size={16} />
+                    <Edit2 size={18} />
                   </button>
                   <button
                     onClick={() => handleDeleteGoal(goal.id!)}
-                    className="p-1 hover:bg-red-100 rounded transition-colors text-red-600"
+                    className="p-2 hover:bg-red-100 rounded transition-colors text-red-600"
                     title="Delete goal"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={18} />
                   </button>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                     progress >= 100

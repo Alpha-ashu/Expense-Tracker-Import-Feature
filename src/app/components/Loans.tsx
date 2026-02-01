@@ -145,17 +145,17 @@ export const Loans: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEditClick(loan)}
-                          className="p-1 hover:bg-gray-100 rounded transition-colors text-gray-600"
+                          className="p-2 hover:bg-gray-100 rounded transition-colors text-gray-600"
                           title="Edit loan"
                         >
-                          <Edit2 size={16} />
+                          <Edit2 size={18} />
                         </button>
                         <button
                           onClick={() => handleDeleteLoan(loan.id!)}
-                          className="p-1 hover:bg-red-100 rounded transition-colors text-red-600"
+                          className="p-2 hover:bg-red-100 rounded transition-colors text-red-600"
                           title="Delete loan"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={18} />
                         </button>
                         <span className={`px-2 py-1 text-xs rounded-full ${getLoanStatusColor(loan)}`}>
                           {loan.status}

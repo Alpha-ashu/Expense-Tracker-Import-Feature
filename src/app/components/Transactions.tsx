@@ -139,7 +139,8 @@ export const Transactions: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      {/* Desktop Table View */}
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -211,6 +212,60 @@ export const Transactions: React.FC = () => {
             </tbody>
           </table>
         </div>
+        {filteredTransactions.length === 0 && (
+          <div className="p-12 text-center">
+            <p className="text-gray-500">No transactions found</p>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="space-y-3 md:hidden">
+        {filteredTransactions.map(transaction => {
+          const account = accounts.find(a => a.id === transaction.accountId);
+          const displayType = transaction.type === 'transfer' 
+            ? (transaction.subcategory === 'Transfer In' ? 'income' : 'expense')
+            : transaction.type;
+          
+          return (
+            <div key={transaction.id} className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    displayType === 'income' ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    {displayType === 'income' ? (
+                      <TrendingUp className="text-green-600" size={20} />
+                    ) : (
+                      <TrendingDown className="text-red-600" size={20} />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{transaction.description}</p>
+                    {transaction.merchant && (
+                      <p className="text-xs text-gray-500 truncate">{transaction.merchant}</p>
+                    )}
+                  </div>
+                </div>
+                <span className={`text-sm font-semibold flex-shrink-0 ml-2 ${
+                  displayType === 'income' ? 'text-green-600' : 'text-red-600'
+                }`}>
+                  {displayType === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between text-xs text-gray-500 flex-wrap gap-2">
+                <div className="flex items-center gap-4">
+                  <span>{new Date(transaction.date).toLocaleDateString()}</span>
+                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                    {transaction.category}
+                  </span>
+                </div>
+                <span className="text-gray-600">{account?.name}</span>
+              </div>
+            </div>
+          );
+        })}
         {filteredTransactions.length === 0 && (
           <div className="p-12 text-center">
             <p className="text-gray-500">No transactions found</p>
