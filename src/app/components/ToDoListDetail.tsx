@@ -26,10 +26,10 @@ export const ToDoListDetail: React.FC = () => {
     }
   }, []);
 
-  const items = useLiveQuery(
-    () => (listId ? db.toDoItems.where('listId').equals(listId).toArray() : Promise.resolve([])),
+  const items: any[] = (useLiveQuery(
+    () => (listId ? (db.toDoItems.where('listId').equals(listId).toArray() as any) : Promise.resolve([])),
     [listId]
-  ) || [];
+  ) || []);
 
   // Fetch list details
   useEffect(() => {
@@ -279,7 +279,7 @@ export const ToDoListDetail: React.FC = () => {
                   <div className="flex items-center gap-2 mt-2">
                     <span
                       className={`text-xs px-2 py-1 rounded ${
-                        priorityColors[item.priority]
+                        priorityColors[item.priority as keyof typeof priorityColors]
                       }`}
                     >
                       {item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}

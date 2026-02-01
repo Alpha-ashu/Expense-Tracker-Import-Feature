@@ -12,12 +12,13 @@ export const ToDoListShare: React.FC = () => {
   const [toDoList, setToDoList] = useState<any>(null);
   const [sharedUserId, setSharedUserId] = useState('');
   const [permission, setPermission] = useState<'view' | 'edit'>('view');
-  const [availableUsers, setAvailableUsers] = useState<{ id: string; name: string }[]>([
+
+  const availableUsers = [
     { id: 'user-2', name: 'Alice' },
     { id: 'user-3', name: 'Bob' },
     { id: 'user-4', name: 'Charlie' },
     { id: 'user-5', name: 'Diana' },
-  ]);
+  ];
 
   const currentUserId = 'user-1'; // Placeholder
 
@@ -40,10 +41,10 @@ export const ToDoListShare: React.FC = () => {
     }
   }, [listId]);
 
-  const sharedWith = useLiveQuery(
-    () => (listId ? db.toDoListShares.where('listId').equals(listId).toArray() : Promise.resolve([])),
+  const sharedWith: any[] = (useLiveQuery(
+    () => (listId ? (db.toDoListShares.where('listId').equals(listId).toArray() as any) : Promise.resolve([])),
     [listId]
-  ) || [];
+  ) || []);
 
   const handleShareList = async () => {
     if (!sharedUserId.trim()) {
@@ -57,7 +58,7 @@ export const ToDoListShare: React.FC = () => {
     }
 
     // Check if already shared with this user
-    const existing = sharedWith.find((s) => s.sharedWithUserId === sharedUserId);
+    const existing = sharedWith.find((s: any) => s.sharedWithUserId === sharedUserId);
     if (existing) {
       toast.error('This list is already shared with this user');
       return;
@@ -65,8 +66,8 @@ export const ToDoListShare: React.FC = () => {
 
     try {
       await db.toDoListShares.add({
-        listId,
-        sharedWithUserId,
+        listId: listId!,
+        sharedWithUserId: sharedUserId,
         permission,
         sharedAt: new Date(),
         sharedBy: currentUserId,
@@ -106,8 +107,8 @@ export const ToDoListShare: React.FC = () => {
     setCurrentPage('todo-lists');
   };
 
-  const getSharedUserName = (userId: string) => {
-    const user = availableUsers.find((u) => u.id === userId);
+  const getSharedUserName = (userId: string): string => {
+    const user = availableUsers.find((u: any) => u.id === userId);
     return user?.name || userId;
   };
 
@@ -152,7 +153,7 @@ export const ToDoListShare: React.FC = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Choose a user...</option>
-                {availableUsers.map((user) => (
+                {availableUsers.map((user: any) => (
                   <option key={user.id} value={user.id}>
                     {user.name}
                   </option>
@@ -199,7 +200,7 @@ export const ToDoListShare: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {sharedWith.map((share) => (
+              {sharedWith.map((share: any) => (
                 <div
                   key={share.id}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"

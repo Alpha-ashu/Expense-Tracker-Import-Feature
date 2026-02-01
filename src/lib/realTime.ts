@@ -1,6 +1,3 @@
-import { db } from './database';
-import { toast } from 'sonner';
-
 // Real-time data sync manager
 export class RealtimeSyncManager {
   private static instance: RealtimeSyncManager;
@@ -103,7 +100,7 @@ export class RealtimeSyncManager {
 
 // Initialize real-time sync manager
 export const initializeRealtimeSync = (): void => {
-  const manager = RealtimeSyncManager.getInstance();
+  RealtimeSyncManager.getInstance();
   console.log('Real-time sync manager initialized');
 };
 

@@ -87,10 +87,6 @@ export const ToDoLists: React.FC = () => {
     }
   };
 
-  const getItemCount = async (listId: number) => {
-    return await db.toDoItems.where('listId').equals(listId).count();
-  };
-
   return (
     <CenteredLayout>
       <div className="space-y-6">

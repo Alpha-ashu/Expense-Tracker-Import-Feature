@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { useApp } from '@/contexts/AppContext';import { CenteredLayout } from '@/app/components/CenteredLayout';import { db } from '@/lib/database';
-import { ChevronLeft, Plus, Users } from 'lucide-react';
+import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
+import { db } from '@/lib/database';
+import { ChevronLeft, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const AddGroup: React.FC = () => {
-  const { accounts, setCurrentPage, currency } = useApp();
+  const { setCurrentPage, currency } = useApp();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -42,15 +44,10 @@ export const AddGroup: React.FC = () => {
 
     try {
       await db.groups.add({
+        id: Date.now().toString(),
         name: formData.name,
-        description: formData.description,
-        participants: validParticipants,
-        totalAmount: formData.totalAmount,
-        amountPerPerson: formData.totalAmount / validParticipants.length,
-        category: formData.category,
-        date: new Date(formData.date),
+        members: validParticipants,
         createdAt: new Date(),
-        updatedAt: new Date(),
       });
       toast.success('Group expense created successfully');
       setCurrentPage('groups');
