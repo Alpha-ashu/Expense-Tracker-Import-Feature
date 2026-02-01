@@ -196,6 +196,50 @@ export interface ExpenseCategory {
   type: 'expense' | 'income';
 }
 
+export interface ExpenseBill {
+  id?: number;
+  transactionId: number;
+  fileName: string;
+  fileType: string; // 'image/jpeg', 'application/pdf', etc.
+  fileSize: number;
+  fileData: Blob; // Store file as blob in Dexie
+  uploadedAt: Date;
+  notes?: string;
+}
+
+export interface ToDoList {
+  id?: number;
+  name: string;
+  description?: string;
+  ownerId: string; // Could be userId or identifier
+  createdAt: Date;
+  updatedAt?: Date;
+  archived: boolean;
+}
+
+export interface ToDoItem {
+  id?: number;
+  listId: number;
+  title: string;
+  description?: string;
+  completed: boolean;
+  priority: 'low' | 'medium' | 'high';
+  dueDate?: Date;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  completedAt?: Date;
+}
+
+export interface ToDoListShare {
+  id?: number;
+  listId: number;
+  sharedWithUserId: string;
+  permission: 'view' | 'edit';
+  sharedAt: Date;
+  sharedBy: string;
+}
+
 export interface Notification {
   id?: number;
   type: 'emi' | 'loan' | 'goal' | 'group';
@@ -262,6 +306,10 @@ export class ProductionDB extends FinanceLifeDB {
   financeAdvisors!: Table<FinanceAdvisor>;
   advisorSessions!: Table<AdvisorSession>;
   expenseCategories!: Table<ExpenseCategory>;
+  expenseBills!: Table<ExpenseBill>;
+  toDoLists!: Table<ToDoList>;
+  toDoItems!: Table<ToDoItem>;
+  toDoListShares!: Table<ToDoListShare>;
 
   constructor() {
     super();
@@ -286,7 +334,11 @@ export class ProductionDB extends FinanceLifeDB {
       taxCalculations: '++id, year',
       financeAdvisors: '++id, verified, rating',
       advisorSessions: '++id, advisorId, date, status',
-      expenseCategories: 'id, type'
+      expenseCategories: 'id, type',
+      expenseBills: '++id, transactionId, uploadedAt',
+      toDoLists: '++id, ownerId, createdAt, archived',
+      toDoItems: '++id, listId, completed, dueDate, priority',
+      toDoListShares: '++id, listId, sharedWithUserId'
     });
   }
 }
