@@ -24,6 +24,7 @@ interface AppContextType {
   updateAccount: (accountId: number, updates: Partial<Account>) => Promise<void>;
   addAccount: (account: Omit<Account, 'id'>) => Promise<void>;
   visibleFeatures: Record<string, boolean>;
+  setVisibleFeatures: (features: Record<string, boolean>) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
