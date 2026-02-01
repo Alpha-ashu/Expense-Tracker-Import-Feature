@@ -234,7 +234,7 @@ const AppContent: React.FC = () => {
       
       <div className="flex-1 flex flex-col overflow-hidden w-full">
         <Header />
-        <main className="flex-1 overflow-y-auto scrollbar-hide pb-20 lg:pb-0">
+        <main className="flex-1 overflow-y-auto scrollbar-hide pb-24 md:pb-20 lg:pb-0">
           {renderPage()}
         </main>
       </div>

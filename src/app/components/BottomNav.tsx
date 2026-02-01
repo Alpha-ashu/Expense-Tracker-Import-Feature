@@ -58,7 +58,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onQuickAdd }) => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 pb-safe z-40 lg:hidden">
-      <div className="flex items-center justify-around h-16">
+      <div className="flex items-center justify-around py-2" style={{minHeight: '64px'}}>
         {filteredNavigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
@@ -69,7 +69,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onQuickAdd }) => {
               <button
                 key={item.id}
                 onClick={() => handleNavigation(item.id)}
-                className="flex items-center justify-center w-14 h-14 -mt-6 bg-blue-600 rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95"
+                className="flex items-center justify-center w-14 h-14 -mt-8 bg-blue-600 rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95"
               >
                 <Icon className="w-6 h-6 text-white" />
               </button>
@@ -80,7 +80,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onQuickAdd }) => {
             <button
               key={item.id}
               onClick={() => handleNavigation(item.id)}
-              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+              className={`flex flex-col items-center justify-center flex-1 py-2 transition-colors ${
                 isActive ? 'text-blue-600' : 'text-gray-500'
               }`}
             >
