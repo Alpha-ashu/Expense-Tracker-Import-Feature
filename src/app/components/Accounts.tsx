@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
 import { Plus, Wallet, CreditCard, Banknote, Smartphone, Edit2, Trash2, Eye, EyeOff, ChevronRight, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -51,12 +52,13 @@ export const Accounts: React.FC = () => {
   }, [transactions, selectedAccountId]);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Accounts & Wallets</h2>
-          <p className="text-gray-500 mt-1">Manage your payment sources</p>
-        </div>
+    <CenteredLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Accounts & Wallets</h2>
+            <p className="text-gray-500 mt-1">Manage your payment sources</p>
+          </div>
         <button
           onClick={() => setCurrentPage('add-account')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -192,6 +194,7 @@ export const Accounts: React.FC = () => {
         </div>
       )}
 
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };

@@ -26,6 +26,8 @@ import { AddTransaction } from '@/app/components/AddTransaction';
 import { AddGoal } from '@/app/components/AddGoal';
 import { AddGroup } from '@/app/components/AddGroup';
 import { AddInvestment } from '@/app/components/AddInvestment';
+import { EditInvestment } from '@/app/components/EditInvestment';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { Toaster } from 'sonner';
 import { initializeDemoData } from '@/lib/demoData';
 import { initializeNotifications } from '@/lib/notifications';
@@ -191,6 +193,8 @@ const AppContent: React.FC = () => {
         return <Investments />;
       case 'add-investment':
         return <AddInvestment />;
+      case 'edit-investment':
+        return <EditInvestment />;
       case 'reports':
         return <Reports />;
       case 'calendar':

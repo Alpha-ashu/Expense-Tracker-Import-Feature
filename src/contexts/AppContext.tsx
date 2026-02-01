@@ -23,6 +23,7 @@ interface AppContextType {
   addTransaction: (transaction: Omit<Transaction, 'id'>) => Promise<void>;
   updateAccount: (accountId: number, updates: Partial<Account>) => Promise<void>;
   addAccount: (account: Omit<Account, 'id'>) => Promise<void>;
+  visibleFeatures: Record<string, boolean>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -33,6 +34,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'en');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [forceUpdate, setForceUpdate] = useState(0);
+  const [visibleFeatures, setVisibleFeaturesState] = useState<Record<string, boolean>>(() => {
+    const stored = localStorage.getItem('visibleFeatures');
+    return stored ? JSON.parse(stored) : {
+      accounts: true,
+      transactions: true,
+      loans: true,
+      goals: true,
+      groups: true,
+      investments: true,
+      reports: true,
+      calendar: true,
+      transfer: true,
+      taxCalculator: true,
+      financeAdvisor: true,
+    };
+  });
 
   const accounts = useLiveQuery(() => db.accounts.toArray(), [forceUpdate]) || [];
   const friends = useLiveQuery(() => db.friends.toArray(), [forceUpdate]) || [];
@@ -134,6 +151,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         addTransaction,
         updateAccount,
         addAccount,
+        visibleFeatures,
       }}
     >
       {children}

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '../../lib/database';
 import { Plus, Upload, TrendingUp, TrendingDown, Filter, Search, Camera } from 'lucide-react';
 import { toast } from 'sonner';
@@ -14,6 +15,7 @@ export const Transactions: React.FC = () => {
   const { accounts, transactions, currency, setCurrentPage } = useApp();
   const [filterType, setFilterType] = useState<'all' | 'expense' | 'income'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showTransactionTypeModal, setShowTransactionTypeModal] = useState(false);
 
   // Check for quick form type from localStorage
   useEffect(() => {
@@ -47,12 +49,13 @@ export const Transactions: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Transactions</h2>
-          <p className="text-gray-500 mt-1">Track all your income and expenses</p>
-        </div>
+    <CenteredLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Transactions</h2>
+            <p className="text-gray-500 mt-1">Track all your income and expenses</p>
+          </div>
         <div className="flex gap-3">
           <button
             onClick={() => setShowScanModal(true)}
@@ -62,7 +65,7 @@ export const Transactions: React.FC = () => {
             Scan Bill
           </button>
           <button
-            onClick={() => setCurrentPage('add-transaction')}
+            onClick={() => setShowTransactionTypeModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus size={20} />
@@ -210,7 +213,58 @@ export const Transactions: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+
+      {/* Transaction Type Selection Modal */}
+      {showTransactionTypeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 w-full max-w-md">
+            <h3 className="text-xl font-bold mb-2">Add Transaction</h3>
+            <p className="text-gray-500 mb-6">Select transaction type</p>
+            <div className="space-y-3">
+              <button
+                onClick={() => {
+                  setShowTransactionTypeModal(false);
+                  localStorage.setItem('quickFormType', 'expense');
+                  setCurrentPage('add-transaction');
+                }}
+                className="w-full p-4 text-left border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors"
+              >
+                <p className="font-semibold text-gray-900">Expense</p>
+                <p className="text-sm text-gray-500">Record money spent</p>
+              </button>
+              <button
+                onClick={() => {
+                  setShowTransactionTypeModal(false);
+                  localStorage.setItem('quickFormType', 'income');
+                  setCurrentPage('add-transaction');
+                }}
+                className="w-full p-4 text-left border border-gray-200 rounded-lg hover:bg-green-50 transition-colors"
+              >
+                <p className="font-semibold text-gray-900">Income</p>
+                <p className="text-sm text-gray-500">Record money received</p>
+              </button>
+              <button
+                onClick={() => {
+                  setShowTransactionTypeModal(false);
+                  setCurrentPage('transfer');
+                }}
+                className="w-full p-4 text-left border border-gray-200 rounded-lg hover:bg-purple-50 transition-colors"
+              >
+                <p className="font-semibold text-gray-900">Transfer</p>
+                <p className="text-sm text-gray-500">Move money between accounts</p>
+              </button>
+            </div>
+            <button
+              onClick={() => setShowTransactionTypeModal(false)}
+              className="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      </div>
+    </CenteredLayout>
   );
 };
 

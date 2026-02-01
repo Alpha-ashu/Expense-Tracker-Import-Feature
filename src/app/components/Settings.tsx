@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '@/lib/database';
-import { Download, Upload, Trash2, Database, Calculator, Users, Globe, DollarSign } from 'lucide-react';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
+import { Download, Upload, Trash2, Database, Calculator, Users, Globe, DollarSign, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { useApp } from '@/contexts/AppContext';
 import { 
@@ -17,6 +18,22 @@ export const Settings: React.FC = () => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [backups, setBackups] = useState<Array<any>>([]);
   const [showBackups, setShowBackups] = useState(false);
+  const [visibleFeatures, setVisibleFeatures] = useState<Record<string, boolean>>(() => {
+    const stored = localStorage.getItem('visibleFeatures');
+    return stored ? JSON.parse(stored) : {
+      accounts: true,
+      transactions: true,
+      loans: true,
+      goals: true,
+      groups: true,
+      investments: true,
+      reports: true,
+      calendar: true,
+      transfer: true,
+      taxCalculator: true,
+      financeAdvisor: true,
+    };
+  });
 
   React.useEffect(() => {
     loadBackups();
@@ -25,6 +42,13 @@ export const Settings: React.FC = () => {
   const loadBackups = async () => {
     const backupList = await listBackups();
     setBackups(backupList);
+  };
+
+  const toggleFeature = (feature: string) => {
+    const updated = { ...visibleFeatures, [feature]: !visibleFeatures[feature] };
+    setVisibleFeatures(updated);
+    localStorage.setItem('visibleFeatures', JSON.stringify(updated));
+    toast.success('Feature visibility updated');
   };
 
   const handleExportData = async (format: 'json' | 'csv' = 'json') => {
@@ -78,11 +102,12 @@ export const Settings: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
-        <p className="text-gray-500 mt-1">Manage your data and preferences</p>
-      </div>
+    <CenteredLayout>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+          <p className="text-gray-500 mt-1">Manage your data and preferences</p>
+        </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="p-6 border-b border-gray-200">
@@ -299,8 +324,53 @@ export const Settings: React.FC = () => {
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Finance Tools</h3>
-          <p className="text-sm text-gray-500 mt-1">Access advanced financial planning features from the main menu (Tax Calculator, Finance Advisor)</p>
+          <h3 className="text-lg font-semibold text-gray-900">Feature Visibility</h3>
+          <p className="text-sm text-gray-500 mt-1">Select which features you want to see in your app</p>
+        </div>
+
+        <div className="divide-y divide-gray-200 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { key: 'accounts', label: 'Accounts', icon: '🏦' },
+              { key: 'transactions', label: 'Transactions', icon: '💳' },
+              { key: 'loans', label: 'Loans & EMIs', icon: '📊' },
+              { key: 'goals', label: 'Goals', icon: '🎯' },
+              { key: 'groups', label: 'Group Expenses', icon: '👥' },
+              { key: 'investments', label: 'Investments', icon: '📈' },
+              { key: 'reports', label: 'Reports', icon: '📋' },
+              { key: 'calendar', label: 'Calendar', icon: '📅' },
+              { key: 'transfer', label: 'Transfer Money', icon: '🔄' },
+              { key: 'taxCalculator', label: 'Tax Calculator', icon: '🧮' },
+              { key: 'financeAdvisor', label: 'Finance Advisor', icon: '💼' },
+            ].map(feature => (
+              <button
+                key={feature.key}
+                onClick={() => toggleFeature(feature.key)}
+                className={`p-4 rounded-lg border-2 transition-all text-left ${
+                  visibleFeatures[feature.key]
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{feature.icon}</span>
+                    <div>
+                      <p className="font-medium text-gray-900">{feature.label}</p>
+                      <p className="text-xs text-gray-500">
+                        {visibleFeatures[feature.key] ? 'Visible' : 'Hidden'}
+                      </p>
+                    </div>
+                  </div>
+                  {visibleFeatures[feature.key] ? (
+                    <Eye size={20} className="text-blue-600" />
+                  ) : (
+                    <EyeOff size={20} className="text-gray-400" />
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -313,7 +383,8 @@ export const Settings: React.FC = () => {
           <p><strong>Offline:</strong> Works completely offline, no internet required</p>
         </div>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };
 

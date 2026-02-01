@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Calendar, Download } from 'lucide-react';
 
@@ -86,7 +87,8 @@ export const Reports: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <CenteredLayout>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
@@ -228,6 +230,7 @@ export const Reports: React.FC = () => {
           })}
         </div>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };

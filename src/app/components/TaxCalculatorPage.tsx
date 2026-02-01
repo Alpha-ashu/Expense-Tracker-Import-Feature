@@ -132,7 +132,8 @@ export const TaxCalculator: React.FC<{ onBack?: () => void }> = ({ onBack }) => 
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <CenteredLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
@@ -317,6 +318,7 @@ export const TaxCalculator: React.FC<{ onBack?: () => void }> = ({ onBack }) => 
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };

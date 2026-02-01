@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { toast } from 'sonner';
@@ -123,7 +124,8 @@ export const Transfer: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <CenteredLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
@@ -257,6 +259,7 @@ export const Transfer: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           Transfers are instantly processed and create audit-trail transactions in both accounts for your records.
         </p>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };

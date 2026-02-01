@@ -26,14 +26,33 @@ const menuItems = [
   { id: 'investments', label: 'Investments', icon: TrendingUp },
   { id: 'reports', label: 'Reports', icon: BarChart3 },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
-  { id: 'transfer', label: 'Transfer Money', icon: ArrowRightLeft },
   { id: 'tax-calculator', label: 'Tax Calculator', icon: Calculator },
   { id: 'finance-advisor', label: 'Finance Advisor', icon: BookOpen },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 export const Sidebar: React.FC = () => {
-  const { currentPage, setCurrentPage } = useApp();
+  const { currentPage, setCurrentPage, visibleFeatures } = useApp();
+
+  const filteredMenuItems = menuItems.filter(item => {
+    const featureMap: Record<string, string> = {
+      'accounts': 'accounts',
+      'transactions': 'transactions',
+      'loans': 'loans',
+      'goals': 'goals',
+      'groups': 'groups',
+      'investments': 'investments',
+      'reports': 'reports',
+      'calendar': 'calendar',
+      'transfer': 'transfer',
+      'tax-calculator': 'taxCalculator',
+      'finance-advisor': 'financeAdvisor',
+      'settings': 'settings',
+    };
+    const featureKey = featureMap[item.id];
+    if (item.id === 'dashboard' || item.id === 'settings') return true;
+    return visibleFeatures[featureKey] !== false;
+  });
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
@@ -43,7 +62,7 @@ export const Sidebar: React.FC = () => {
       </div>
       
       <nav className="flex-1 p-4 overflow-y-auto">
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
           

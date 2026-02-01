@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { Wallet, TrendingUp, TrendingDown, Target, CreditCard, Users } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -88,11 +89,12 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-        <p className="text-gray-500 mt-1">Welcome to your financial overview</p>
-      </div>
+    <CenteredLayout>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+          <p className="text-gray-500 mt-1">Welcome to your financial overview</p>
+        </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -255,7 +257,8 @@ export const Dashboard: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };
 

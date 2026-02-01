@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
 import { Plus, DollarSign, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -40,12 +41,13 @@ export const Loans: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Loans & EMIs</h2>
-          <p className="text-gray-500 mt-1">Manage your debts and lending</p>
-        </div>
+    <CenteredLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Loans & EMIs</h2>
+            <p className="text-gray-500 mt-1">Manage your debts and lending</p>
+          </div>
         <button
           onClick={() => setCurrentPage('add-loan')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -165,7 +167,8 @@ export const Loans: React.FC = () => {
           onClose={() => setShowPaymentModal(null)}
         />
       )}
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };
 

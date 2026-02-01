@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useApp } from '@/contexts/AppContext';
-import { db } from '@/lib/database';
+import { useApp } from '@/contexts/AppContext';import { CenteredLayout } from '@/app/components/CenteredLayout';import { db } from '@/lib/database';
 import { ChevronLeft, Plus, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -49,7 +48,8 @@ export const AddInvestment: React.FC = () => {
   const gainPercentage = formData.purchasePrice > 0 ? (investmentGain / (formData.purchasePrice * formData.quantity)) * 100 : 0;
 
   return (
-    <div className="p-6 space-y-6">
+    <CenteredLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
@@ -224,6 +224,7 @@ export const AddInvestment: React.FC = () => {
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
-};
+};;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
 import { ChevronLeft, Edit } from 'lucide-react';
 import { toast } from 'sonner';
@@ -53,7 +54,8 @@ export const EditAccount: React.FC<{ accountId?: number }> = ({ accountId }) => 
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <CenteredLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
@@ -136,6 +138,7 @@ export const EditAccount: React.FC<{ accountId?: number }> = ({ accountId }) => 
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };

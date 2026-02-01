@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { CenteredLayout } from '@/app/components/CenteredLayout';
 import { db } from '@/lib/database';
-import { Plus, TrendingUp, TrendingDown } from 'lucide-react';
+import { Plus, TrendingUp, TrendingDown, Edit2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
@@ -40,20 +41,21 @@ export const Investments: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Investments</h2>
-          <p className="text-gray-500 mt-1">Track your investment portfolio</p>
+    <CenteredLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Investments</h2>
+            <p className="text-gray-500 mt-1">Track your investment portfolio</p>
+          </div>
+          <button
+            onClick={() => setCurrentPage('add-investment')}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus size={20} />
+            Add Investment
+          </button>
         </div>
-        <button
-          onClick={() => setCurrentPage('add-investment')}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus size={20} />
-          Add Investment
-        </button>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-blue-600 p-6 rounded-xl text-white">
@@ -179,6 +181,18 @@ export const Investments: React.FC = () => {
                       {inv.profitLoss >= 0 ? '+' : ''}{((inv.profitLoss / inv.totalInvested) * 100).toFixed(2)}%
                     </div>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <button
+                      onClick={() => {
+                        localStorage.setItem('editingInvestmentId', inv.id.toString());
+                        setCurrentPage('edit-investment');
+                      }}
+                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      title="Edit investment"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -198,6 +212,7 @@ export const Investments: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };
